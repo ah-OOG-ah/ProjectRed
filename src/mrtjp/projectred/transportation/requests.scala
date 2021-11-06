@@ -387,17 +387,17 @@ class PathOrdering(distanceWeight: Double) extends Ordering[StartEndPath] {
         val firstRouter = first.end.getParent
         val secondRouter = second.end.getParent
 
-        val priorityComparison: Int = compareByPriorities(firstRouter, secondRouter)
+        val priorityComparison = compareByPriorities(firstRouter, secondRouter)
         if (priorityComparison != EQUAL) return priorityComparison
 
-        val scoreComparison: Int = compareByScores(first, second, firstRouter, secondRouter)
+        val scoreComparison = compareByScores(first, second, firstRouter, secondRouter)
         if (scoreComparison == EQUAL) compareEndIps(first, second)
         else scoreComparison
     }
 
     private def compareByPriorities(firstRouter: IWorldRouter, secondRouter: IWorldRouter) = {
-        val firstPriority: Int = priorityOf(firstRouter)
-        val secondPriority: Int = priorityOf(secondRouter)
+        val firstPriority = priorityOf(firstRouter)
+        val secondPriority = priorityOf(secondRouter)
         firstPriority.compareTo(secondPriority)
     }
 
@@ -411,10 +411,10 @@ class PathOrdering(distanceWeight: Double) extends Ordering[StartEndPath] {
         val firstWorkload = workloadOf(firstRouter)
         val secondWorkload = workloadOf(secondRouter)
 
-        val firstScore = (firstWorkload + first.distance * distanceWeight)
-        val secondScore = (secondWorkload + second.distance * distanceWeight)
+        val firstScore = firstWorkload + first.distance * distanceWeight
+        val secondScore = secondWorkload + second.distance * distanceWeight
 
-        // Lower score is better so comparison is inverted
+        // Lower score should take priority so comparison is inverted
         secondScore.compareTo(firstScore)
     }
 

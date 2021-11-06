@@ -1,6 +1,7 @@
 package mrtjp.projectred.transportation
 
 import mrtjp.core.item.{ItemEquality, ItemKey, ItemKeyStack, ItemQueue}
+import mrtjp.projectred.transportation.PathOrdering.EQUAL
 import net.minecraft.item.ItemStack
 
 import java.util.{PriorityQueue => JPriorityQueue}
@@ -82,7 +83,7 @@ class RequestBranchNode(parentCrafter:CraftingPromise, stack:ItemKeyStack, equal
         try {
             
             val allRouters = filteredRoutsByCost
-              .sorted(PathOrdering.metric)
+              .sorted(PathOrdering.loadAndDistance)
 
             def search() {
                 for (l <- allRouters) if (isDone) return else l.end.getParent match {
@@ -135,8 +136,8 @@ class RequestBranchNode(parentCrafter:CraftingPromise, stack:ItemKeyStack, equal
     def doCraftReq() =
     {
         val allRouters = requester.getRouter
-            .getFilteredRoutesByCost(p => p.flagRouteFrom && p.allowCrafting && p.allowItem(stack.key))
-            .sorted(PathOrdering.load)
+          .getFilteredRoutesByCost(p => p.flagRouteFrom && p.allowCrafting && p.allowItem(stack.key))
+          .sorted(PathOrdering.loadOnly)
 
         var jobs = Vector.newBuilder[CraftingPromise]
         for (l <- allRouters) l.end.getParent match
@@ -387,64 +388,58 @@ class RequestRoot(thePackage:ItemKeyStack, equality:ItemEquality, requester:IWor
     }
 }
 
-object PathOrdering
-{
-    val metric = new PathOrdering(1.0D)
-    val load = new PathOrdering(0.0D)
+object PathOrdering {
+    val loadAndDistance = new PathOrdering(1.0D)
+    val loadOnly = new PathOrdering(0.0D)
+
+    private val EQUAL = 0
 }
 
-class PathOrdering(distanceWeight:Double) extends Ordering[StartEndPath]
-{
-    override def compare(x1:StartEndPath, y1:StartEndPath):Int =
-    {
-        var x = x1
-        var y = y1
+class PathOrdering(distanceWeight: Double) extends Ordering[StartEndPath] {
+    override def compare(first: StartEndPath, second: StartEndPath): Int = {
+        val firstRouter = first.end.getParent
+        val secondRouter = second.end.getParent
 
-        var c = 0.0D
+        val priorityComparison: Int = compareByPriorities(firstRouter, secondRouter)
+        if (priorityComparison != EQUAL) return priorityComparison
 
-        def wr1 = x.end.getParent
-        def wr2 = y.end.getParent
-
-        val p1 = wr1 match
-        {
-            case b:IWorldBroadcaster => b.getBroadcastPriority
-            case _ => Integer.MIN_VALUE
-        }
-        val p2 = wr2 match
-        {
-            case b:IWorldBroadcaster => b.getBroadcastPriority
-            case _ => Integer.MIN_VALUE
-        }
-
-        if (p1 != p2) return if (p2 > p1) 1 else -1
-
-        var switchKey = 1
-        if (x.end.getIPAddress-y.end.getIPAddress > 0)
-        {
-            switchKey = -1
-            val temp = x
-            x = y
-            y = temp
-        }
-
-        val l1 = wr1 match
-        {
-            case b:IWorldBroadcaster => b.getWorkLoad
-            case _ => 0.0D
-        }
-        val l2 = wr2 match
-        {
-            case b:IWorldBroadcaster => b.getWorkLoad
-            case _ => 0.0D
-        }
-
-        c = l1-l2
-        c += (x.distance-y.distance)*distanceWeight
-
-        if (c == 0) -switchKey //if same distance lower id is preferred
-        else if (c > 0) (c+0.5D).toInt*switchKey //round up
-        else (c-0.5D).toInt*switchKey //round down
+        val scoreComparison: Int = compareByScores(first, second, firstRouter, secondRouter)
+        if (scoreComparison == EQUAL) compareEndIps(first, second)
+        else scoreComparison
     }
+
+    private def compareByPriorities(firstRouter: IWorldRouter, secondRouter: IWorldRouter) = {
+        val firstPriority: Int = priorityOf(firstRouter)
+        val secondPriority: Int = priorityOf(secondRouter)
+        firstPriority.compareTo(secondPriority)
+    }
+
+    private def priorityOf(router: IWorldRouter) =
+        router match {
+            case broadcaster: IWorldBroadcaster => broadcaster.getBroadcastPriority
+            case _ => Integer.MIN_VALUE
+        }
+
+    private def compareByScores(first: StartEndPath, second: StartEndPath, firstRouter: IWorldRouter, secondRouter: IWorldRouter) = {
+        val firstWorkload = workloadOf(firstRouter)
+        val secondWorkload = workloadOf(secondRouter)
+
+        val firstScore = (firstWorkload + first.distance * distanceWeight)
+        val secondScore = (secondWorkload + second.distance * distanceWeight)
+
+        // Lower score is better so comparison is inverted
+        secondScore.compareTo(firstScore)
+    }
+
+    private def workloadOf(router: IWorldRouter) =
+        router match {
+            case broadcaster: IWorldBroadcaster => broadcaster.getWorkLoad
+            case _ => 0.0D
+        }
+
+    private def compareEndIps(first: StartEndPath, second: StartEndPath) =
+        first.end.getIPAddress.compareTo(second.end.getIPAddress)
+
 }
 
 class DeliveryPromise(var item:ItemKey, var size:Int, var from:IWorldBroadcaster, var isExcess:Boolean = false, var used:Boolean = false)

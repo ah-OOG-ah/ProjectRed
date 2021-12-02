@@ -1,0 +1,17 @@
+// Add your dependencies here
+
+dependencies {
+    compile("com.github.GTNewHorizons:TinkersConstruct:master-SNAPSHOT:dev")
+
+    compile("mrtjp:MrTJPCore:1.7.10-1.1.0.33:dev")
+    compile("mrtjp:ForgeRelocation:1.7.10-0.0.1.4:dev")
+
+    compileOnly("com.github.GTNewHorizons:StorageDrawers:master-SNAPSHOT:dev") {
+        transitive = false
+    }
+
+    compileOnly("curse.maven:computercraft-67504:2269339") {  // https://www.curseforge.com/minecraft/mc-mods/computercraft/files/2269339
+        transitive = false
+    }
+    compileOnly files("dependencies/ColoredLightsCore-1.3.7.39.jar")
+}

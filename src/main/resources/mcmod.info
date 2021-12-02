@@ -50,7 +50,6 @@
       "${modId}|Exploration",
       "${modId}|Transportation",
       "TConstruct",
-      "ThermalExpansion",
       "ComputerCraft"
   ],
   "dependants" : [],

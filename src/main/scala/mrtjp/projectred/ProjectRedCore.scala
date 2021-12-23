@@ -7,7 +7,7 @@ import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 import org.apache.logging.log4j.LogManager
 
-@Mod(modid = "ProjRed|Core", useMetadata = true, modLanguage = "scala", guiFactory = "mrtjp.projectred.core.GuiConfigFactory")
+@Mod(modid = "ProjRed|Core", version ="GRADLETOKEN_VERSION", useMetadata = true, modLanguage = "scala", guiFactory = "mrtjp.projectred.core.GuiConfigFactory")
 object ProjectRedCore
 {
     val log = LogManager.getFormatterLogger("ProjRed|Core")

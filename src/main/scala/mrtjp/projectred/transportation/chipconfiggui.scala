@@ -9,11 +9,14 @@ import codechicken.lib.data.MCDataInput
 import codechicken.lib.gui.GuiDraw
 import codechicken.lib.packet.PacketCustom
 import codechicken.lib.render.TextureUtils
+import codechicken.nei.api.{API, INEIGuiAdapter}
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import mrtjp.core.color.Colors
 import mrtjp.core.gui._
 import mrtjp.core.vec.{Point, Rect, Size}
 import mrtjp.projectred.core.libmc.PRResources
+import mrtjp.projectred.transportation.GuiChipConfigNeiHandler.{offsetPos, offsetSize}
+import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Slot
 import org.lwjgl.input.Keyboard
@@ -198,6 +201,8 @@ object GuiChipConfig extends TGuiBuilder
         }
         else null
     }
+
+    API.registerNEIGuiHandler(new GuiChipConfigNeiHandler());
 }
 
 abstract class ChipPanelNode(chip:RoutingChip) extends TNode
@@ -264,4 +269,26 @@ abstract class ChipPanelNode(chip:RoutingChip) extends TNode
             true
         }
         else false
+}
+
+/**
+ * Hides NEI item panel slots if they would overlap with a currently visible chip configuration panel
+ */
+class GuiChipConfigNeiHandler extends INEIGuiAdapter {
+    override def hideItemPanelSlot(gui: GuiContainer, x: Int, y: Int, w: Int, h: Int): Boolean = {
+        if (gui.isInstanceOf[GuiChipConfig]) {
+            val chip = gui.asInstanceOf[GuiChipConfig];
+            chip.panels.exists(p => !p._2.hidden
+              && (new Rect(p._2.position - offsetPos, p._2.size + offsetSize)
+              .contains(new Point(x - chip.position.x, y - chip.position.y))));
+        } else {
+            false;
+        }
+    }
+}
+
+private object GuiChipConfigNeiHandler {
+    // Not exactly sure why the chip panel .frame attribute is off, but this offset suffices to clear the panels.
+    private val offsetPos = new Point(11, 11);
+    private val offsetSize = new Size(11, 11);
 }

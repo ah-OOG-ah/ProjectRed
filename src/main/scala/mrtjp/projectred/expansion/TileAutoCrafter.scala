@@ -222,7 +222,7 @@ class TileAutoCrafter extends TileMachine with TPoweredMachine with TInventory w
                 if (s.getItem.hasContainerItem(s))
                 {
                     val cStack = s.getItem.getContainerItem(s)
-                    setInventorySlotContents(i, if (cStack.getItemDamage < cStack.getMaxDamage) cStack else null)
+                    setInventorySlotContents(i, cStack)
                     left -= 1
                 }
                 else

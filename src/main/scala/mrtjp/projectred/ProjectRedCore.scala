@@ -7,10 +7,19 @@ import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 import org.apache.logging.log4j.LogManager
 
-@Mod(modid = "ProjRed|Core", version ="GRADLETOKEN_VERSION", useMetadata = true, modLanguage = "scala", guiFactory = "mrtjp.projectred.core.GuiConfigFactory")
+@Mod(modid = "ProjRed|Core",
+    version = ProjectRedCore.VERSION,
+    dependencies = "required-after:Forge;" +
+      "required-after:ForgeMultipart;" +
+      "required-after:MrTJPCoreMod",
+    modLanguage = "scala",
+    guiFactory = "mrtjp.projectred.core.GuiConfigFactory",
+    acceptedMinecraftVersions = "[1.7.10]",
+    name = "ProjectRed Core")
 object ProjectRedCore
 {
     val log = LogManager.getFormatterLogger("ProjRed|Core")
+    final val VERSION = "GRADLETOKEN_VERSION"
 
     /** Items **/
     var itemPart:ItemPart = null

@@ -9,7 +9,12 @@ import net.minecraft.item.Item.ToolMaterial
 import net.minecraft.item.ItemArmor.ArmorMaterial
 import net.minecraft.item.ItemStack
 
-@Mod(modid = "ProjRed|Exploration", useMetadata = true, modLanguage = "scala")
+@Mod(modid = "ProjRed|Exploration",
+    dependencies = "required-after:ProjRed|Core",
+    modLanguage = "scala",
+    acceptedMinecraftVersions = "[1.7.10]",
+    name = "ProjectRed Exploration",
+    version = ProjectRedCore.VERSION)
 object ProjectRedExploration
 {
     /** Blocks **/

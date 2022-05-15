@@ -6,7 +6,13 @@ import mrtjp.projectred.expansion._
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 
-@Mod(modid = "ProjRed|Expansion", useMetadata = true, modLanguage = "scala")
+@Mod(modid = "ProjRed|Expansion",
+    dependencies = "required-after:ProjRed|Core;" +
+      "after:ProjRed|Transmission",
+    modLanguage = "scala",
+    acceptedMinecraftVersions = "[1.7.10]",
+    name = "ProjectRed Expansion",
+    version = ProjectRedCore.VERSION)
 object ProjectRedExpansion
 {
     /** Blocks **/

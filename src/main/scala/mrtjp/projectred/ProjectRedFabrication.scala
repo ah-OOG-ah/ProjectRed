@@ -11,7 +11,14 @@ import mrtjp.projectred.fabrication.{BlockICMachine, FabricationProxy, ItemICBlu
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 
-@Mod(modid = "ProjRed|Fabrication", useMetadata = true, modLanguage = "scala")
+@Mod(modid = "ProjRed|Fabrication",
+    dependencies = "required-after:ProjRed|Core;" +
+      "required-after:ProjRed|Integration;" +
+      "required-after:ProjRed|Transmission",
+    modLanguage = "scala",
+    acceptedMinecraftVersions = "[1.7.10]",
+    name = "ProjectRed Fabrication",
+    version = ProjectRedCore.VERSION)
 object ProjectRedFabrication
 {
     /** Blocks **/

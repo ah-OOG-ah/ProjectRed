@@ -7,7 +7,12 @@ import mrtjp.projectred.transmission._
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 
-@Mod(modid = "ProjRed|Transmission", useMetadata = true, modLanguage = "scala")
+@Mod(modid = "ProjRed|Transmission",
+    dependencies = "required-after:ProjRed|Core",
+    modLanguage = "scala",
+    acceptedMinecraftVersions = "[1.7.10]",
+    name = "ProjectRed Transmission",
+    version = ProjectRedCore.VERSION)
 object ProjectRedTransmission
 {
     ProjectRedAPI.transmissionAPI = new APIImpl_Transmission

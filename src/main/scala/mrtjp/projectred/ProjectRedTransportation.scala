@@ -6,7 +6,12 @@ import mrtjp.projectred.api.ProjectRedAPI
 import mrtjp.projectred.transportation._
 import net.minecraft.creativetab.CreativeTabs
 
-@Mod(modid = "ProjRed|Transportation", useMetadata = true, modLanguage = "scala")
+@Mod(modid = "ProjRed|Transportation",
+    dependencies = "required-after:ProjRed|Core",
+    modLanguage = "scala",
+    acceptedMinecraftVersions = "[1.7.10]",
+    name = "ProjectRed Transportation",
+    version = ProjectRedCore.VERSION)
 object ProjectRedTransportation
 {
     ProjectRedAPI.transportationAPI = new APIImpl_Transportation

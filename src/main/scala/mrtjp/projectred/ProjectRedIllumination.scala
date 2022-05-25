@@ -6,7 +6,12 @@ import mrtjp.core.color.Colors_old
 import mrtjp.projectred.illumination._
 import net.minecraft.creativetab.CreativeTabs
 
-@Mod(modid = "ProjRed|Illumination", useMetadata = true, modLanguage = "scala")
+@Mod(modid = "ProjRed|Illumination",
+    dependencies = "required-after:ProjRed|Core",
+    modLanguage = "scala",
+    acceptedMinecraftVersions = "[1.7.10]",
+    name = "ProjectRed Illumination",
+    version = ProjectRedCore.VERSION)
 object ProjectRedIllumination
 {
     /** Blocks **/

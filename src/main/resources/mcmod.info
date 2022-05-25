@@ -2,11 +2,7 @@
 {
   "modid": "${modId}|Core",
   "name": "${modName} Core",
-  "description":"Redstone. The way it was meant to be.
-
-  Supporters:
-  Jacob M
-  ",
+  "description":"Redstone. The way it was meant to be.\n\nSupporters:\nJacob M",
   "version": "${modVersion}",
   "mcversion": "${minecraftVersion}",
   "url": "http://projectredwiki.com",

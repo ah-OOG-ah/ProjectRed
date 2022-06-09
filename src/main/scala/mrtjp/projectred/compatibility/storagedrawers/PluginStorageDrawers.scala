@@ -5,7 +5,8 @@
  */
 package mrtjp.projectred.compatibility.storagedrawers
 
-import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerGroup
+import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.IVoidable
 import mrtjp.core.inventory.{IInvWrapperRegister, InvWrapper}
 import mrtjp.core.item.ItemKey
 import mrtjp.projectred.compatibility.IPRPlugin
@@ -33,15 +34,15 @@ object PluginStorageDrawers extends IPRPlugin
 object StorageDrawersInvWrapperRegister extends IInvWrapperRegister
 {
   override def wrapperID = "storagedrawers"
-  override def matches(inv:IInventory) = inv.isInstanceOf[TileEntityDrawers]
+  override def matches(inv:IInventory) = inv.isInstanceOf[IDrawerGroup]
   override def create(inv:IInventory) = new StorageDrawersInvWrapper(inv)
 }
 
 class StorageDrawersInvWrapper(inv:IInventory) extends InvWrapper(inv)
 {
-  def getDrawers = inv.asInstanceOf[TileEntityDrawers]
+  def getDrawers = inv.asInstanceOf[IDrawerGroup]
 
-  override def getSpaceForItem(item:ItemKey) =
+  override def getSpaceForItem(item:ItemKey): Int =
   {
     var freeSpace = 0
     for(i <- 0 until getDrawers.getDrawerCount){
@@ -49,6 +50,10 @@ class StorageDrawersInvWrapper(inv:IInventory) extends InvWrapper(inv)
 
       if(drawer.canItemBeStored(item.testStack)){
         freeSpace += drawer.getMaxCapacity(item.testStack) - drawer.getStoredItemCount
+        drawer match {
+          case voidable: IVoidable if voidable.isVoid => return Int.MaxValue
+          case _ =>
+        }
       }
     }
     freeSpace
@@ -75,15 +80,18 @@ class StorageDrawersInvWrapper(inv:IInventory) extends InvWrapper(inv)
   {
     var added = 0
 
-    for(mergePass <- Array(true, false)){
-      for(i <- 0 until getDrawers.getDrawerCount){
+    for (mergePass <- Array(true, false)) {
+      for (i <- 0 until getDrawers.getDrawerCount) {
         val drawer = getDrawers.getDrawer(i)
 
-          if(drawer.canItemBeStored(item.testStack)) {
-          val spaceLeft = drawer.getMaxCapacity(item.testStack) - drawer.getStoredItemCount
+        if (drawer.canItemBeStored(item.testStack)) {
+          val spaceLeft = drawer match {
+            case voidable: IVoidable if voidable.isVoid => Int.MaxValue
+            case _ => drawer.getMaxCapacity(item.testStack) - drawer.getStoredItemCount
+          }
           val toAddToDrawer = if (mergePass && drawer.isEmpty) 0 else math.min(spaceLeft, toAdd - added)
 
-          if(toAddToDrawer > 0){
+          if (toAddToDrawer > 0) {
             if (drawer.isEmpty) {
               drawer.setStoredItemRedir(item.testStack, toAddToDrawer)
             } else {

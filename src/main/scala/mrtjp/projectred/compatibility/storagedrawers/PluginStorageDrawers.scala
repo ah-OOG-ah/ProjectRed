@@ -51,11 +51,7 @@ class StorageDrawersInvWrapper(inv:IInventory) extends InvWrapper(inv)
       if(drawer.canItemBeStored(item.testStack)){
         freeSpace += drawer.getMaxCapacity(item.testStack) - drawer.getStoredItemCount
         drawer match {
-          case voidable: IVoidable =>
-            ;
-            if (voidable.isVoid) {
-              return Int.MaxValue
-            }
+          case voidable: IVoidable if voidable.isVoid => return Int.MaxValue
           case _ =>
         }
       }
@@ -89,14 +85,9 @@ class StorageDrawersInvWrapper(inv:IInventory) extends InvWrapper(inv)
         val drawer = getDrawers.getDrawer(i)
 
         if (drawer.canItemBeStored(item.testStack)) {
-          var spaceLeft = drawer.getMaxCapacity(item.testStack) - drawer.getStoredItemCount
-          drawer match {
-            case voidable: IVoidable =>
-              ;
-              if (voidable.isVoid) {
-                spaceLeft = Int.MaxValue
-              }
-            case _ =>
+          val spaceLeft = drawer match {
+            case voidable: IVoidable if voidable.isVoid => Int.MaxValue
+            case _ => drawer.getMaxCapacity(item.testStack) - drawer.getStoredItemCount
           }
           val toAddToDrawer = if (mergePass && drawer.isEmpty) 0 else math.min(spaceLeft, toAdd - added)
 

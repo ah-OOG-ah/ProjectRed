@@ -225,7 +225,6 @@ abstract class GatePart extends TMultiPart with TCuboidPart with TNormalOcclusio
             {
                 if (player.isSneaking) configure()
                 else rotate()
-                held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
             }
             return true
         }

@@ -190,11 +190,6 @@ class ItemScrewdriver extends ItemCore("projectred.core.screwdriver") with IScre
                                     player:EntityPlayer) = true
 
     override def canUse(player:EntityPlayer, stack:ItemStack) = true
-
-    override def damageScrewdriver(player:EntityPlayer, stack:ItemStack)
-    {
-        stack.damageItem(1, player)
-    }
 }
 
 class ItemWireDebugger extends ItemCore("projectred.core.wiredebugger")

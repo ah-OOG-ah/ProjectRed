@@ -178,7 +178,6 @@ object PartDefs extends ItemDefinition
 class ItemScrewdriver extends ItemCore("projectred.core.screwdriver") with IScrewdriver
 {
     setMaxStackSize(1)
-    setMaxDamage(128)
     setNoRepair()
     setCreativeTab(ProjectRedCore.tabCore)
     setTextureName("projectred:base/screwdriver")

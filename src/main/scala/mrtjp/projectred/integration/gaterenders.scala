@@ -474,29 +474,45 @@ class RenderMultiplexer extends GateRenderer[ComboGatePart]
 class RenderPulse extends GateRenderer[ComboGatePart]
 {
     val wires = generateWireModels("PULSE", 3)
-    val torches = Seq(new RedstoneTorchModel(4, 9.5, 6), new RedstoneTorchModel(11, 9.5, 6),
+    val torches1 = Seq(new RedstoneTorchModel(4, 9.5, 6), new RedstoneTorchModel(11, 9.5, 6),
         new RedstoneTorchModel(8, 3.5, 8))
+    val torches2 = Seq(new RedstoneTorchModel(4, 9.5, 6), new RedstoneTorchModel(11, 9.5, 6),
+        new RedstoneTorchModel(8, 3.5, 4))
 
-    override val coreModels = wires++torches:+new BaseComponentModel
+    var shape = 0
+    override val coreModels = Seq(new BaseComponentModel)
+    override def switchModels = if (shape == 0) wires++torches1 else wires++torches2
+    override val allSwitchModels = wires++torches1++torches2
 
     override def prepareInv()
     {
+        shape = 0
         wires(0).on = true
         wires(1).on = false
         wires(2).on = false
-        torches(0).on = true
-        torches(1).on = false
-        torches(2).on = false
+        torches1(0).on = true
+        torches1(1).on = false
+        torches1(2).on = false
     }
 
     override def prepare(gate:ComboGatePart)
     {
+        shape = gate.shape
         wires(0).on = (gate.state&4) == 0
         wires(1).on = (gate.state&4) != 0
         wires(2).on = (gate.state&0x14) == 4
-        torches(0).on = wires(0).on
-        torches(1).on = wires(1).on
-        torches(2).on = (gate.state&0x10) != 0
+        if (shape == 0)
+        {
+            torches1(0).on = wires(0).on
+            torches1(1).on = wires(1).on
+            torches1(2).on = (gate.state&0x10) != 0
+        }
+        else
+        {
+            torches2(0).on = wires(0).on
+            torches2(1).on = wires(1).on
+            torches2(2).on = (gate.state&0x10) != 0
+        }
     }
 }
 

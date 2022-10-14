@@ -238,12 +238,16 @@ object Pulse extends ComboGateLogic
     override def outputMask(shape:Int) = 1
     override def inputMask(shape:Int) = 4
 
+//  Shape 0 is normal (two game tick) pulse, shape 1 is one game tick
+    override def cycleShape(shape: Int): Int = (shape+1)%2
+
     override def calcOutput(gate:ComboGatePart, input:Int) = 0
 
     override def onChange(gate:ComboGatePart) =
     {
         val oldInput = gate.state&0xF
         val newInput = getInput(gate, 4)
+        val pulseTickLength = if (gate.shape == 0) 2 else 1
 
         if (oldInput != newInput)
         {
@@ -252,7 +256,7 @@ object Pulse extends ComboGateLogic
             if (newInput != 0 && (gate.state&0xF0) == 0)
             {
                 gate.setState(gate.state&0xF|0x10)
-                gate.scheduleTick(2)
+                gate.scheduleTick(pulseTickLength)
                 gate.onOutputChange(1)
             }
         }

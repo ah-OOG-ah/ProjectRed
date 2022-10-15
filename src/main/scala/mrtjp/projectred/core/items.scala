@@ -178,7 +178,6 @@ object PartDefs extends ItemDefinition
 class ItemScrewdriver extends ItemCore("projectred.core.screwdriver") with IScrewdriver
 {
     setMaxStackSize(1)
-    setMaxDamage(128)
     setNoRepair()
     setCreativeTab(ProjectRedCore.tabCore)
     setTextureName("projectred:base/screwdriver")
@@ -191,11 +190,6 @@ class ItemScrewdriver extends ItemCore("projectred.core.screwdriver") with IScre
                                     player:EntityPlayer) = true
 
     override def canUse(player:EntityPlayer, stack:ItemStack) = true
-
-    override def damageScrewdriver(player:EntityPlayer, stack:ItemStack)
-    {
-        stack.damageItem(1, player)
-    }
 }
 
 class ItemWireDebugger extends ItemCore("projectred.core.wiredebugger")

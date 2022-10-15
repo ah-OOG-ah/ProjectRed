@@ -135,7 +135,6 @@ trait IChargable
 class ItemElectronicScrewdriver extends ItemCore("projectred.expansion.electric_screwdriver") with IScrewdriver with IChargable
 {
     setMaxStackSize(1)
-    setMaxDamage(400)
     setNoRepair()
     setCreativeTab(ProjectRedExpansion.tabExpansion)
     setTextureName("projectred:mechanical/electric_screwdriver")
@@ -148,11 +147,6 @@ class ItemElectronicScrewdriver extends ItemCore("projectred.expansion.electric_
                                     player:EntityPlayer) = true
 
     override def canUse(player:EntityPlayer, stack:ItemStack) = stack.getItemDamage < stack.getMaxDamage
-
-    override def damageScrewdriver(player:EntityPlayer, stack:ItemStack)
-    {
-        stack.damageItem(1, player)
-    }
 }
 
 class ItemPlan extends ItemCore("projectred.expansion.plan")

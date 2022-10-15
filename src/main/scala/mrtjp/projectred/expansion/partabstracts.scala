@@ -138,7 +138,6 @@ trait TFaceElectricalDevice extends TMultiPart with TCuboidPart with TNormalOccl
             if (!world.isRemote)
             {
                 rotate()
-                held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
             }
             return true
         }

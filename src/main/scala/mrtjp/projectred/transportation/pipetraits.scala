@@ -506,6 +506,7 @@ trait TInventoryPipe[T <: AbstractPipePayload] extends PayloadPipePart[T] with I
             if (!world.isRemote)
             {
                 shiftOrientation(true)
+                held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
             }
             return true
         }

@@ -81,6 +81,7 @@ abstract class TileICMachine extends InstancedBlockTile with TTileOrient
             if (world.isRemote) return true
             setRotation((rotation+1)%4)
             sendOrientUpdate()
+            held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
             true
         }
         else false

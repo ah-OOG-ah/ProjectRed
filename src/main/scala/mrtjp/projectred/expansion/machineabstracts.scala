@@ -98,6 +98,7 @@ abstract class TileMachine extends InstancedBlockTile with TTileOrient
                 if (old != rotation) sendOrientUpdate()
                 world.notifyBlocksOfNeighborChange(x, y, z, getBlock)
                 onBlockRotated()
+                held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
             }
             def orient()
             {
@@ -106,6 +107,7 @@ abstract class TileMachine extends InstancedBlockTile with TTileOrient
                 if (old != side) sendOrientUpdate()
                 world.notifyBlocksOfNeighborChange(x, y, z, getBlock)
                 onBlockRotated()
+                held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
             }
 
             if (player.isSneaking || !doesOrient) rotate() else orient()

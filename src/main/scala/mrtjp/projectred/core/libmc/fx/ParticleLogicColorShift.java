@@ -1,7 +1,7 @@
 package mrtjp.projectred.core.libmc.fx;
 
-public final class ParticleLogicColorShift extends ParticleLogic
-{
+public final class ParticleLogicColorShift extends ParticleLogic {
+
     private float minRed;
     private float maxRed;
     private float minGreen;
@@ -17,8 +17,7 @@ public final class ParticleLogicColorShift extends ParticleLogic
     private float greenShift;
     private float blueShift;
 
-    public ParticleLogicColorShift()
-    {
+    public ParticleLogicColorShift() {
         minRed = 0.0F;
         minGreen = 0.0F;
         minBlue = 0.0F;
@@ -32,8 +31,7 @@ public final class ParticleLogicColorShift extends ParticleLogic
         generateNextColorTarget();
     }
 
-    public ParticleLogicColorShift setColorTarget(float red, float green, float blue)
-    {
+    public ParticleLogicColorShift setColorTarget(float red, float green, float blue) {
         targetRed = red;
         targetGreen = green;
         targetBlue = blue;
@@ -45,8 +43,7 @@ public final class ParticleLogicColorShift extends ParticleLogic
         return this;
     }
 
-    public ParticleLogicColorShift setShiftSpeed(float speed)
-    {
+    public ParticleLogicColorShift setShiftSpeed(float speed) {
         shiftSpeed = speed;
 
         redShift = shiftSpeed;
@@ -56,8 +53,8 @@ public final class ParticleLogicColorShift extends ParticleLogic
         return this;
     }
 
-    public ParticleLogicColorShift setColorRange(float minRed, float minBlue, float minGreen, float maxRed, float maxGreen, float maxBlue)
-    {
+    public ParticleLogicColorShift setColorRange(float minRed, float minBlue, float minGreen, float maxRed,
+            float maxGreen, float maxBlue) {
         this.minRed = minRed;
         this.maxRed = maxRed;
         this.minGreen = minGreen;
@@ -67,57 +64,51 @@ public final class ParticleLogicColorShift extends ParticleLogic
         return this;
     }
 
-    public ParticleLogicColorShift setEndOnReachingTargetColor()
-    {
+    public ParticleLogicColorShift setEndOnReachingTargetColor() {
         endOnReachingColor = true;
         return this;
     }
 
-    private void generateNextColorTarget()
-    {
+    private void generateNextColorTarget() {
         targetRed = rand.nextFloat() * (maxRed - minRed) + minRed;
         targetGreen = rand.nextFloat() * (maxGreen - minGreen) + minGreen;
         targetBlue = rand.nextFloat() * (maxBlue - minBlue) + minBlue;
     }
 
     @Override
-    public void doUpdate()
-    {
+    public void doUpdate() {
         float currentRed = particle.r();
         float currentGreen = particle.g();
         float currentBlue = particle.b();
 
-        if (currentRed == targetRed && currentGreen == targetGreen && currentBlue == targetBlue)
-        {
-            if (endOnReachingColor)
-            {
+        if (currentRed == targetRed && currentGreen == targetGreen && currentBlue == targetBlue) {
+            if (endOnReachingColor) {
                 finishLogic();
                 return;
             }
             generateNextColorTarget();
         }
 
-        particle.setRGBColorF(shiftValue(currentRed, targetRed, redShift), shiftValue(currentGreen, targetGreen, greenShift), shiftValue(currentBlue, targetBlue, blueShift));
+        particle.setRGBColorF(
+                shiftValue(currentRed, targetRed, redShift),
+                shiftValue(currentGreen, targetGreen, greenShift),
+                shiftValue(currentBlue, targetBlue, blueShift));
     }
 
-    private float shiftValue(float current, float target, float step)
-    {
+    private float shiftValue(float current, float target, float step) {
         float curDist = Math.abs(target - current);
-        if (curDist < step)
-            step = curDist;
-        if (current < target)
-            current += step;
-        else if (current > target)
-            current -= step;
+        if (curDist < step) step = curDist;
+        if (current < target) current += step;
+        else if (current > target) current -= step;
         return current;
     }
 
     @Override
-    public ParticleLogic clone()
-    {
-        ParticleLogicColorShift clone = new ParticleLogicColorShift().setShiftSpeed(shiftSpeed).setColorRange(minRed, minBlue, minGreen, maxRed, maxGreen, maxBlue).setColorTarget(targetRed, targetGreen, targetBlue);
-        if (endOnReachingColor)
-            clone.setEndOnReachingTargetColor();
+    public ParticleLogic clone() {
+        ParticleLogicColorShift clone = new ParticleLogicColorShift().setShiftSpeed(shiftSpeed)
+                .setColorRange(minRed, minBlue, minGreen, maxRed, maxGreen, maxBlue)
+                .setColorTarget(targetRed, targetGreen, targetBlue);
+        if (endOnReachingColor) clone.setEndOnReachingTargetColor();
         clone.setFinal(finalLogic).setPriority(priority);
         return clone;
     }

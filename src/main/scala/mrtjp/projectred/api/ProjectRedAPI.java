@@ -1,13 +1,13 @@
 package mrtjp.projectred.api;
 
 /**
- * Central API class for ProjectRed If ProjectRed is installed, the appropriate
- * field will contain an implementor of these methods. <br>
+ * Central API class for ProjectRed If ProjectRed is installed, the appropriate field will contain an implementor of
+ * these methods. <br>
  * <br>
  * It is recommended that mods access this class within a soft dependency class.
  */
-public final class ProjectRedAPI
-{
+public final class ProjectRedAPI {
+
     public static ProjectRedAPI instance;
 
     /**

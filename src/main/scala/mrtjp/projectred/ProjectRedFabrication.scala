@@ -6,50 +6,57 @@
 package mrtjp.projectred
 
 import cpw.mods.fml.common.Mod
-import cpw.mods.fml.common.event.{FMLInitializationEvent, FMLPostInitializationEvent, FMLPreInitializationEvent}
-import mrtjp.projectred.fabrication.{BlockICMachine, FabricationProxy, ItemICBlueprint, ItemICChip}
+import cpw.mods.fml.common.event.{
+  FMLInitializationEvent,
+  FMLPostInitializationEvent,
+  FMLPreInitializationEvent
+}
+import mrtjp.projectred.fabrication.{
+  BlockICMachine,
+  FabricationProxy,
+  ItemICBlueprint,
+  ItemICChip
+}
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 
-@Mod(modid = "ProjRed|Fabrication",
-    dependencies = "required-after:ProjRed|Core;" +
-      "required-after:ProjRed|Integration;" +
-      "required-after:ProjRed|Transmission",
-    modLanguage = "scala",
-    acceptedMinecraftVersions = "[1.7.10]",
-    name = "ProjectRed Fabrication",
-    version = ProjectRedCore.VERSION)
-object ProjectRedFabrication
-{
-    /** Blocks **/
-    var icBlock:BlockICMachine = null
+@Mod(
+  modid = "ProjRed|Fabrication",
+  dependencies = "required-after:ProjRed|Core;" +
+    "required-after:ProjRed|Integration;" +
+    "required-after:ProjRed|Transmission",
+  modLanguage = "scala",
+  acceptedMinecraftVersions = "[1.7.10]",
+  name = "ProjectRed Fabrication",
+  version = ProjectRedCore.VERSION
+)
+object ProjectRedFabrication {
 
-    /** Items **/
-    var itemICBlueprint:ItemICBlueprint = null
-    var itemICChip:ItemICChip = null
+  /** Blocks * */
+  var icBlock: BlockICMachine = null
 
-    var tabFabrication = new CreativeTabs("fab")
-    {
-        override def getIconItemStack = new ItemStack(itemICChip)
-        override def getTabIconItem = getIconItemStack.getItem
-    }
+  /** Items * */
+  var itemICBlueprint: ItemICBlueprint = null
+  var itemICChip: ItemICChip = null
 
-    @Mod.EventHandler
-    def preInit(event:FMLPreInitializationEvent)
-    {
-        FabricationProxy.versionCheck()
-        FabricationProxy.preinit()
-    }
+  var tabFabrication = new CreativeTabs("fab") {
+    override def getIconItemStack = new ItemStack(itemICChip)
+    override def getTabIconItem = getIconItemStack.getItem
+  }
 
-    @Mod.EventHandler
-    def init(event:FMLInitializationEvent)
-    {
-        FabricationProxy.init()
-    }
+  @Mod.EventHandler
+  def preInit(event: FMLPreInitializationEvent) {
+    FabricationProxy.versionCheck()
+    FabricationProxy.preinit()
+  }
 
-    @Mod.EventHandler
-    def postInit(event:FMLPostInitializationEvent)
-    {
-        FabricationProxy.postinit()
-    }
+  @Mod.EventHandler
+  def init(event: FMLInitializationEvent) {
+    FabricationProxy.init()
+  }
+
+  @Mod.EventHandler
+  def postInit(event: FMLPostInitializationEvent) {
+    FabricationProxy.postinit()
+  }
 }

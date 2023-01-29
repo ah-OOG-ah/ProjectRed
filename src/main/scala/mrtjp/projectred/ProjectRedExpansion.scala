@@ -1,60 +1,62 @@
 package mrtjp.projectred
 
 import cpw.mods.fml.common.Mod
-import cpw.mods.fml.common.event.{FMLInitializationEvent, FMLPostInitializationEvent, FMLPreInitializationEvent}
+import cpw.mods.fml.common.event.{
+  FMLInitializationEvent,
+  FMLPostInitializationEvent,
+  FMLPreInitializationEvent
+}
 import mrtjp.projectred.expansion._
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
 
-@Mod(modid = "ProjRed|Expansion",
-    dependencies = "required-after:ProjRed|Core;" +
-      "after:ProjRed|Transmission",
-    modLanguage = "scala",
-    acceptedMinecraftVersions = "[1.7.10]",
-    name = "ProjectRed Expansion",
-    version = ProjectRedCore.VERSION)
-object ProjectRedExpansion
-{
-    /** Blocks **/
-    var machine1:BlockMachine = null //machines
-    var machine2:BlockMachine = null //devices
+@Mod(
+  modid = "ProjRed|Expansion",
+  dependencies = "required-after:ProjRed|Core;" +
+    "after:ProjRed|Transmission",
+  modLanguage = "scala",
+  acceptedMinecraftVersions = "[1.7.10]",
+  name = "ProjectRed Expansion",
+  version = ProjectRedCore.VERSION
+)
+object ProjectRedExpansion {
 
-    /** Items **/
-    var itemEmptybattery:ItemBatteryEmpty = null
-    var itemBattery:ItemBattery = null
-    var itemJetpack:ItemJetpack = null
-    var itemScrewdriver:ItemElectronicScrewdriver = null
-    var itemInfusedEnderPearl:ItemInfusedEnderPearl = null
-    var itemPlan:ItemPlan = null
+  /** Blocks * */
+  var machine1: BlockMachine = null // machines
+  var machine2: BlockMachine = null // devices
 
-    /** Enchantments **/
-    var enchantmentFuelEfficiency:EnchantmentFuelEfficiency = null
+  /** Items * */
+  var itemEmptybattery: ItemBatteryEmpty = null
+  var itemBattery: ItemBattery = null
+  var itemJetpack: ItemJetpack = null
+  var itemScrewdriver: ItemElectronicScrewdriver = null
+  var itemInfusedEnderPearl: ItemInfusedEnderPearl = null
+  var itemPlan: ItemPlan = null
 
-    /** Parts **/
-    var itemSolar:ItemSolarPanel = null
+  /** Enchantments * */
+  var enchantmentFuelEfficiency: EnchantmentFuelEfficiency = null
 
-    val tabExpansion = new CreativeTabs("expansion")
-    {
-        override def getIconItemStack = new ItemStack(machine2, 1, 0)
-        override def getTabIconItem = getIconItemStack.getItem
-    }
+  /** Parts * */
+  var itemSolar: ItemSolarPanel = null
 
-    @Mod.EventHandler
-    def preInit(event:FMLPreInitializationEvent)
-    {
-        ExpansionProxy.versionCheck()
-        ExpansionProxy.preinit()
-    }
+  val tabExpansion = new CreativeTabs("expansion") {
+    override def getIconItemStack = new ItemStack(machine2, 1, 0)
+    override def getTabIconItem = getIconItemStack.getItem
+  }
 
-    @Mod.EventHandler
-    def init(event:FMLInitializationEvent)
-    {
-        ExpansionProxy.init()
-    }
+  @Mod.EventHandler
+  def preInit(event: FMLPreInitializationEvent) {
+    ExpansionProxy.versionCheck()
+    ExpansionProxy.preinit()
+  }
 
-    @Mod.EventHandler
-    def postInit(event:FMLPostInitializationEvent)
-    {
-        ExpansionProxy.postinit()
-    }
+  @Mod.EventHandler
+  def init(event: FMLInitializationEvent) {
+    ExpansionProxy.init()
+  }
+
+  @Mod.EventHandler
+  def postInit(event: FMLPostInitializationEvent) {
+    ExpansionProxy.postinit()
+  }
 }

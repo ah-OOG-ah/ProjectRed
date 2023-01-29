@@ -1,10 +1,10 @@
 package mrtjp.projectred.core.libmc.fx;
 
-import codechicken.lib.vec.Vector3;
 import mrtjp.core.math.MathLib;
+import codechicken.lib.vec.Vector3;
 
-public class ParticleLogicArcToPoint extends ParticleLogic
-{
+public class ParticleLogicArcToPoint extends ParticleLogic {
+
     private final Vector3 start;
     private final Vector3 target;
     private Vector3 firstControl;
@@ -14,8 +14,7 @@ public class ParticleLogicArcToPoint extends ParticleLogic
     private final float offsetFactor;
     private final float halfOffsetFactor;
 
-    public ParticleLogicArcToPoint(Vector3 start, Vector3 end)
-    {
+    public ParticleLogicArcToPoint(Vector3 start, Vector3 end) {
         this.start = start.copy();
         this.target = end.copy();
         percent = 0.0F;
@@ -25,11 +24,16 @@ public class ParticleLogicArcToPoint extends ParticleLogic
         generateControlPoints();
     }
 
-    public ParticleLogicArcToPoint generateControlPoints()
-    {
-        firstControl = new Vector3(start.x + (target.x - start.x) / 3.0F, start.y + (target.y - start.y) / 3.0F, start.z + (target.z - start.z) / 3.0F);
+    public ParticleLogicArcToPoint generateControlPoints() {
+        firstControl = new Vector3(
+                start.x + (target.x - start.x) / 3.0F,
+                start.y + (target.y - start.y) / 3.0F,
+                start.z + (target.z - start.z) / 3.0F);
 
-        secondControl = new Vector3(start.x + (target.x - start.x) / 3.0F * 2.0F, start.y + (target.y - start.y) / 3.0F * 2.0F, start.z + (target.z - start.z) / 3.0F * 2.0F);
+        secondControl = new Vector3(
+                start.x + (target.x - start.x) / 3.0F * 2.0F,
+                start.y + (target.y - start.y) / 3.0F * 2.0F,
+                start.z + (target.z - start.z) / 3.0F * 2.0F);
 
         double offsetX = rand.nextFloat() * offsetFactor - halfOffsetFactor;
         double offsetZ = rand.nextFloat() * offsetFactor - halfOffsetFactor;
@@ -43,25 +47,21 @@ public class ParticleLogicArcToPoint extends ParticleLogic
         return this;
     }
 
-    public ParticleLogicArcToPoint setControlPoints(Vector3 first, Vector3 second)
-    {
+    public ParticleLogicArcToPoint setControlPoints(Vector3 first, Vector3 second) {
         firstControl = first;
         secondControl = second;
         return this;
     }
 
-    public ParticleLogicArcToPoint setSpeed(float speed)
-    {
+    public ParticleLogicArcToPoint setSpeed(float speed) {
         this.speed = speed;
         return this;
     }
 
     @Override
-    public void doUpdate()
-    {
+    public void doUpdate() {
         percent += speed;
-        if (percent >= 1.0F)
-        {
+        if (percent >= 1.0F) {
             finishLogic();
             return;
         }
@@ -70,8 +70,8 @@ public class ParticleLogicArcToPoint extends ParticleLogic
     }
 
     @Override
-    public ParticleLogic clone()
-    {
-        return new ParticleLogicArcToPoint(particle.position(), target).setSpeed(speed).setControlPoints(firstControl, secondControl).setFinal(finalLogic).setPriority(priority);
+    public ParticleLogic clone() {
+        return new ParticleLogicArcToPoint(particle.position(), target).setSpeed(speed)
+                .setControlPoints(firstControl, secondControl).setFinal(finalLogic).setPriority(priority);
     }
 }

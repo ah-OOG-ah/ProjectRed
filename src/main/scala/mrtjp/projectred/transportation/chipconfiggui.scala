@@ -15,7 +15,10 @@ import mrtjp.core.color.Colors
 import mrtjp.core.gui._
 import mrtjp.core.vec.{Point, Rect, Size}
 import mrtjp.projectred.core.libmc.PRResources
-import mrtjp.projectred.transportation.GuiChipConfigNeiHandler.{offsetPos, offsetSize}
+import mrtjp.projectred.transportation.GuiChipConfigNeiHandler.{
+  offsetPos,
+  offsetSize
+}
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.Slot
@@ -24,271 +27,275 @@ import org.lwjgl.opengl.GL11
 
 import scala.collection.mutable.ListBuffer
 
-class ContainerChipConfig(player:EntityPlayer, var chip:RoutingChip) extends NodeContainer
-{
-    var slotCount = 0
-    var indexMap = Map[Class[_ <: RoutingChip], Int]()
+class ContainerChipConfig(player: EntityPlayer, var chip: RoutingChip)
+    extends NodeContainer {
+  var slotCount = 0
+  var indexMap = Map[Class[_ <: RoutingChip], Int]()
 
-    {
-        for ((c, i) <- ContainerChipConfig.panelSlotsMap)
-            if (c.isInstance(chip))
-            {
-                indexMap += c -> slotCount
-                i(this)
-                slotCount = slots.size
-            }
+  {
+    for ((c, i) <- ContainerChipConfig.panelSlotsMap)
+      if (c.isInstance(chip)) {
+        indexMap += c -> slotCount
+        i(this)
+        slotCount = slots.size
+      }
 
-        addPlayerInv(player, 8, 86)
-    }
+    addPlayerInv(player, 8, 86)
+  }
 
-    override def addSlotToContainer(slot:Slot):Slot =
-    {
-        super.addSlotToContainer(slot)
-        if (slot.getSlotIndex == player.inventory.currentItem && slot.inventory == player.inventory)
-            slot.asInstanceOf[Slot3].canRemoveDelegate = {() => false}
-        slot
-    }
-
-    override def onContainerClosed(p:EntityPlayer)
-    {
-        super.onContainerClosed(p)
-        saveChip()
-    }
-
-    def saveChip()
-    {
-        if (player.worldObj.isRemote)
-        {
-            val stack = player.inventory.getCurrentItem
-            ItemRoutingChip.saveChipToItemStack(stack, chip)
-            player.inventory.markDirty()
-
-            new PacketCustom(TransportationCPH.channel, TransportationCPH.gui_ChipNBTSet)
-                    .writeByte(player.inventory.currentItem).writeItemStack(stack).sendToServer()
-        }
-    }
-}
-
-object ContainerChipConfig
-{
-    val panelSlotsMap = Map[Class[_ <: RoutingChip], ContainerChipConfig => Unit](
-        classOf[TChipFilter] -> {c =>
-            for (s <- 0 until 9)
-            {
-                val slot = new Slot3(c.chip.asInstanceOf[TChipFilter].filter, s, 9999, 9999)
-                slot.phantomSlot = true
-                c.addSlotToContainer(slot)
-            }
-        },
-        classOf[TChipOrientation] -> {c =>
-        },
-        classOf[TChipPriority] -> {c =>
-        },
-        classOf[TChipStock] -> {c =>
-            for (s <- 0 until 9)
-            {
-                val slot = new Slot3(c.chip.asInstanceOf[TChipStock].stock, s, 9999, 9999)
-                slot.phantomSlot = true
-                c.addSlotToContainer(slot)
-            }
-        },
-        classOf[TChipCrafter] -> {c =>
-            for (s <- 0 until 10)
-            {
-                val slot = new Slot3(c.chip.asInstanceOf[TChipCrafter].matrix, s, 9999, 9999)
-                slot.phantomSlot = true
-                c.addSlotToContainer(slot)
-            }
-
-            for (s <- 0 until 9)
-            {
-                val slot = new Slot3(c.chip.asInstanceOf[TChipCrafter].extMatrix, s, 9999, 9999)
-                slot.phantomSlot = true
-                c.addSlotToContainer(slot)
-            }
-        },
-        classOf[TChipCrafterExtension] -> {c =>
-        }
+  override def addSlotToContainer(slot: Slot): Slot = {
+    super.addSlotToContainer(slot)
+    if (
+      slot.getSlotIndex == player.inventory.currentItem && slot.inventory == player.inventory
     )
+      slot.asInstanceOf[Slot3].canRemoveDelegate = { () => false }
+    slot
+  }
 
-    val panelFactories = Map[Class[_ <: RoutingChip], RoutingChip => Seq[ChipPanelNode]](
-        classOf[TChipFilter] -> {c => Seq(new FilterChipPanel(c.asInstanceOf[TChipFilter]))},
-        classOf[TChipOrientation] -> {c => Seq(new OrientChipPanel(c.asInstanceOf[TChipOrientation]))},
-        classOf[TChipPriority] -> {c => Seq(new PriorityChipPanel(c.asInstanceOf[TChipPriority]))},
-        classOf[TChipStock] -> {c => Seq(new StockChipPanel(c.asInstanceOf[TChipStock]))},
-        classOf[TChipMatchMatrix] -> {c => Seq(new MatrixMatchingPanel(c.asInstanceOf[TChipMatchMatrix]))},
-        classOf[TChipCrafter] -> {c => Seq(
-            new CraftChipPanel(c.asInstanceOf[TChipCrafter]),
-            new CraftExtPanel(c.asInstanceOf[TChipCrafter])
-        )},
-        classOf[TChipCrafterExtension] -> {c => Seq(new ExtensionIDPanel(c.asInstanceOf[TChipCrafterExtension]))}
+  override def onContainerClosed(p: EntityPlayer) {
+    super.onContainerClosed(p)
+    saveChip()
+  }
+
+  def saveChip() {
+    if (player.worldObj.isRemote) {
+      val stack = player.inventory.getCurrentItem
+      ItemRoutingChip.saveChipToItemStack(stack, chip)
+      player.inventory.markDirty()
+
+      new PacketCustom(
+        TransportationCPH.channel,
+        TransportationCPH.gui_ChipNBTSet
+      )
+        .writeByte(player.inventory.currentItem)
+        .writeItemStack(stack)
+        .sendToServer()
+    }
+  }
+}
+
+object ContainerChipConfig {
+  val panelSlotsMap = Map[Class[_ <: RoutingChip], ContainerChipConfig => Unit](
+    classOf[TChipFilter] -> { c =>
+      for (s <- 0 until 9) {
+        val slot =
+          new Slot3(c.chip.asInstanceOf[TChipFilter].filter, s, 9999, 9999)
+        slot.phantomSlot = true
+        c.addSlotToContainer(slot)
+      }
+    },
+    classOf[TChipOrientation] -> { c => },
+    classOf[TChipPriority] -> { c => },
+    classOf[TChipStock] -> { c =>
+      for (s <- 0 until 9) {
+        val slot =
+          new Slot3(c.chip.asInstanceOf[TChipStock].stock, s, 9999, 9999)
+        slot.phantomSlot = true
+        c.addSlotToContainer(slot)
+      }
+    },
+    classOf[TChipCrafter] -> { c =>
+      for (s <- 0 until 10) {
+        val slot =
+          new Slot3(c.chip.asInstanceOf[TChipCrafter].matrix, s, 9999, 9999)
+        slot.phantomSlot = true
+        c.addSlotToContainer(slot)
+      }
+
+      for (s <- 0 until 9) {
+        val slot =
+          new Slot3(c.chip.asInstanceOf[TChipCrafter].extMatrix, s, 9999, 9999)
+        slot.phantomSlot = true
+        c.addSlotToContainer(slot)
+      }
+    },
+    classOf[TChipCrafterExtension] -> { c => }
+  )
+
+  val panelFactories =
+    Map[Class[_ <: RoutingChip], RoutingChip => Seq[ChipPanelNode]](
+      classOf[TChipFilter] -> { c =>
+        Seq(new FilterChipPanel(c.asInstanceOf[TChipFilter]))
+      },
+      classOf[TChipOrientation] -> { c =>
+        Seq(new OrientChipPanel(c.asInstanceOf[TChipOrientation]))
+      },
+      classOf[TChipPriority] -> { c =>
+        Seq(new PriorityChipPanel(c.asInstanceOf[TChipPriority]))
+      },
+      classOf[TChipStock] -> { c =>
+        Seq(new StockChipPanel(c.asInstanceOf[TChipStock]))
+      },
+      classOf[TChipMatchMatrix] -> { c =>
+        Seq(new MatrixMatchingPanel(c.asInstanceOf[TChipMatchMatrix]))
+      },
+      classOf[TChipCrafter] -> { c =>
+        Seq(
+          new CraftChipPanel(c.asInstanceOf[TChipCrafter]),
+          new CraftExtPanel(c.asInstanceOf[TChipCrafter])
+        )
+      },
+      classOf[TChipCrafterExtension] -> { c =>
+        Seq(new ExtensionIDPanel(c.asInstanceOf[TChipCrafterExtension]))
+      }
     )
 }
 
-class GuiChipConfig(player:EntityPlayer, c:ContainerChipConfig) extends NodeGui(c)
-{
-    var panels = Seq[(TNode, ChipPanelNode)]()
-    var isDirty = false
+class GuiChipConfig(player: EntityPlayer, c: ContainerChipConfig)
+    extends NodeGui(c) {
+  var panels = Seq[(TNode, ChipPanelNode)]()
+  var isDirty = false
 
-    {
-        c.slotChangeDelegate = {_ => isDirty = true}
+  {
+    c.slotChangeDelegate = { _ => isDirty = true }
 
-        for ((cl, factory) <- ContainerChipConfig.panelFactories)
-            if (cl.isInstance(c.chip)) factory(c.chip).foreach
-            { panel =>
-                val dot = new DotSelectNode
-                dot.position = panel.getDotPosition-4
-                dot.tooltipBuilder = panel.buildDotTooltip
-                dot.clickDelegate = {() =>
-                    if (panel.hidden)
-                    {
-                        children.collect {case c:ChipPanelNode => c}.foreach(_.hidePanel())
-                        panel.unhidePanel()
-                    }
-                }
-                addChild(dot)
-                addChild(panel)
-                panels :+= (dot, panel)
-            }
-
-        updateDotVisibility()
-    }
-
-    def updateDotVisibility()
-    {
-        for ((dot, panel) <- panels)
-            dot.hidden = !panel.isPanelVisible
-    }
-
-    override def frameUpdate_Impl(mouse:Point, rframe:Float)
-    {
-        updateDotVisibility()
-        if (isDirty)
-        {
-            c.saveChip()
-            isDirty = false
+    for ((cl, factory) <- ContainerChipConfig.panelFactories)
+      if (cl.isInstance(c.chip)) factory(c.chip).foreach { panel =>
+        val dot = new DotSelectNode
+        dot.position = panel.getDotPosition - 4
+        dot.tooltipBuilder = panel.buildDotTooltip
+        dot.clickDelegate = { () =>
+          if (panel.hidden) {
+            children
+              .collect { case c: ChipPanelNode => c }
+              .foreach(_.hidePanel())
+            panel.unhidePanel()
+          }
         }
-    }
+        addChild(dot)
+        addChild(panel)
+        panels :+= (dot, panel)
+      }
 
-    override def drawBack_Impl(mouse:Point, rframe:Float)
-    {
-        PRResources.guiChipContainer.bind()
-        GuiDraw.drawTexturedModalRect(0, 0, 0, 0, size.width, size.height)
-        TextureUtils.bindAtlas(1)
-        drawTexturedModelRectFromIcon(55, 14, c.chip.getChipType.icon, 64, 64)
-    }
+    updateDotVisibility()
+  }
 
-    override def keyPressed_Impl(c:Char, keycode:Int, consumed:Boolean) =
-    {
-        keycode == player.inventory.currentItem+2
+  def updateDotVisibility() {
+    for ((dot, panel) <- panels)
+      dot.hidden = !panel.isPanelVisible
+  }
+
+  override def frameUpdate_Impl(mouse: Point, rframe: Float) {
+    updateDotVisibility()
+    if (isDirty) {
+      c.saveChip()
+      isDirty = false
     }
+  }
+
+  override def drawBack_Impl(mouse: Point, rframe: Float) {
+    PRResources.guiChipContainer.bind()
+    GuiDraw.drawTexturedModalRect(0, 0, 0, 0, size.width, size.height)
+    TextureUtils.bindAtlas(1)
+    drawTexturedModelRectFromIcon(55, 14, c.chip.getChipType.icon, 64, 64)
+  }
+
+  override def keyPressed_Impl(c: Char, keycode: Int, consumed: Boolean) = {
+    keycode == player.inventory.currentItem + 2
+  }
 }
 
-object GuiChipConfig extends TGuiBuilder
-{
-    override def getID = TransportationProxy.guiIDRoutingChips
+object GuiChipConfig extends TGuiBuilder {
+  override def getID = TransportationProxy.guiIDRoutingChips
 
-    @SideOnly(Side.CLIENT)
-    override def buildGui(player:EntityPlayer, data:MCDataInput) =
-    {
-        val slot = data.readUByte()
-        player.inventory.currentItem = slot
-        val stack = player.inventory.getStackInSlot(slot)
-        if (ItemRoutingChip.isValidChip(stack))
-        {
-            val r = ItemRoutingChip.loadChipFromItemStack(stack)
-            new GuiChipConfig(player, r.createContainer(player))
-        }
-        else null
-    }
+  @SideOnly(Side.CLIENT)
+  override def buildGui(player: EntityPlayer, data: MCDataInput) = {
+    val slot = data.readUByte()
+    player.inventory.currentItem = slot
+    val stack = player.inventory.getStackInSlot(slot)
+    if (ItemRoutingChip.isValidChip(stack)) {
+      val r = ItemRoutingChip.loadChipFromItemStack(stack)
+      new GuiChipConfig(player, r.createContainer(player))
+    } else null
+  }
 
-    API.registerNEIGuiHandler(new GuiChipConfigNeiHandler());
+  API.registerNEIGuiHandler(new GuiChipConfigNeiHandler());
 }
 
-abstract class ChipPanelNode(chip:RoutingChip) extends TNode
-{
-    var size = Size.zeroSize
-    position = getPanelPosition
-    override def frame = Rect(position, size)
+abstract class ChipPanelNode(chip: RoutingChip) extends TNode {
+  var size = Size.zeroSize
+  position = getPanelPosition
+  override def frame = Rect(position, size)
 
-    var lineColor = Colors.WHITE.argb(0xAA)
+  var lineColor = Colors.WHITE.argb(0xaa)
 
-    {
-        val close = new MCButtonNode
-        close.position = Point(4, 4)
-        close.size = Size(5, 5)
-        close.clickDelegate = {() => hidePanel()}
-        addChild(close)
+  {
+    val close = new MCButtonNode
+    close.position = Point(4, 4)
+    close.size = Size(5, 5)
+    close.clickDelegate = { () => hidePanel() }
+    addChild(close)
 
-        hidePanel()
-    }
+    hidePanel()
+  }
 
-    def getContainer = getRoot.inventorySlots.asInstanceOf[ContainerChipConfig]
+  def getContainer = getRoot.inventorySlots.asInstanceOf[ContainerChipConfig]
 
-    def getDotPosition:Point
+  def getDotPosition: Point
 
-    def getPanelPosition:Point
+  def getPanelPosition: Point
 
-    def isPanelVisible:Boolean
+  def isPanelVisible: Boolean
 
-    def buildDotTooltip(list:ListBuffer[String])
+  def buildDotTooltip(list: ListBuffer[String])
 
-    def hidePanel()
-    {
-        hidden = true
-    }
+  def hidePanel() {
+    hidden = true
+  }
 
-    def unhidePanel()
-    {
-        hidden = false
-    }
+  def unhidePanel() {
+    hidden = false
+  }
 
-    override def drawBack_Impl(mouse:Point, rframe:Float)
-    {
-        drawBackgroundBox()
-    }
+  override def drawBack_Impl(mouse: Point, rframe: Float) {
+    drawBackgroundBox()
+  }
 
-    def drawBackgroundBox()
-    {
-        GuiLib.drawGuiBox(position.x, position.y, size.width, size.height, 0)
-    }
+  def drawBackgroundBox() {
+    GuiLib.drawGuiBox(position.x, position.y, size.width, size.height, 0)
+  }
 
-    override def drawFront_Impl(mouse:Point, rframe:Float)
-    {
-        val from = getDotPosition
-        val to = from.clamp(frame)
-        GL11.glColor4d(1, 1, 1, 1)
-        GuiLib.drawLine(from.x, from.y, to.x, to.y, lineColor)
-        GuiDraw.drawRect(to.x-3, to.y-3, 6, 6, lineColor)
-    }
+  override def drawFront_Impl(mouse: Point, rframe: Float) {
+    val from = getDotPosition
+    val to = from.clamp(frame)
+    GL11.glColor4d(1, 1, 1, 1)
+    GuiLib.drawLine(from.x, from.y, to.x, to.y, lineColor)
+    GuiDraw.drawRect(to.x - 3, to.y - 3, 6, 6, lineColor)
+  }
 
-    override def keyPressed_Impl(c:Char, keycode:Int, consumed:Boolean) =
-        if (!consumed && keycode == Keyboard.KEY_ESCAPE)
-        {
-            hidePanel()
-            true
-        }
-        else false
+  override def keyPressed_Impl(c: Char, keycode: Int, consumed: Boolean) =
+    if (!consumed && keycode == Keyboard.KEY_ESCAPE) {
+      hidePanel()
+      true
+    } else false
 }
 
-/**
- * Hides NEI item panel slots if they would overlap with a currently visible chip configuration panel
- */
+/** Hides NEI item panel slots if they would overlap with a currently visible
+  * chip configuration panel
+  */
 class GuiChipConfigNeiHandler extends INEIGuiAdapter {
-    override def hideItemPanelSlot(gui: GuiContainer, x: Int, y: Int, w: Int, h: Int): Boolean = {
-        if (gui.isInstanceOf[GuiChipConfig]) {
-            val chip = gui.asInstanceOf[GuiChipConfig];
-            chip.panels.exists(p => !p._2.hidden
-              && (new Rect(p._2.position - offsetPos, p._2.size + offsetSize)
-              .contains(new Point(x - chip.position.x, y - chip.position.y))));
-        } else {
-            false;
-        }
+  override def hideItemPanelSlot(
+      gui: GuiContainer,
+      x: Int,
+      y: Int,
+      w: Int,
+      h: Int
+  ): Boolean = {
+    if (gui.isInstanceOf[GuiChipConfig]) {
+      val chip = gui.asInstanceOf[GuiChipConfig];
+      chip.panels.exists(p =>
+        !p._2.hidden
+          && (new Rect(p._2.position - offsetPos, p._2.size + offsetSize)
+            .contains(new Point(x - chip.position.x, y - chip.position.y)))
+      );
+    } else {
+      false;
     }
+  }
 }
 
 private object GuiChipConfigNeiHandler {
-    // Not exactly sure why the chip panel .frame attribute is off, but this offset suffices to clear the panels.
-    private val offsetPos = new Point(11, 11);
-    private val offsetSize = new Size(11, 11);
+  // Not exactly sure why the chip panel .frame attribute is off, but this offset suffices to clear the panels.
+  private val offsetPos = new Point(11, 11);
+  private val offsetSize = new Size(11, 11);
 }

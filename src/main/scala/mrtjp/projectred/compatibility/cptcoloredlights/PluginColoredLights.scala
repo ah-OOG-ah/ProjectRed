@@ -11,30 +11,26 @@ import mrtjp.projectred.compatibility.IPRPlugin
 import mrtjp.projectred.core.Configurator
 import mrtjp.projectred.illumination.IlluminationProxy
 
-object PluginColoredLights extends IPRPlugin
-{
-    val PRIll_modID = "ProjRed|Illumination"
-    val CL_modID = "easycoloredlights"
+object PluginColoredLights extends IPRPlugin {
+  val PRIll_modID = "ProjRed|Illumination"
+  val CL_modID = "easycoloredlights"
 
-    override def getModIDs = Array(CL_modID, PRIll_modID)
+  override def getModIDs = Array(CL_modID, PRIll_modID)
 
-    override def isEnabled = Configurator.compat_ColoredLights
+  override def isEnabled = Configurator.compat_ColoredLights
 
-    override def preInit()
-    {
-        IlluminationProxy.getLightValue = (m, b) =>
-        {
-            if (!(0 until 16 contains m)) b
-            else
-            {
-                val c = Colors(m)
-                CLApi.makeRGBLightValue(c.rF, c.gF, c.bF)
-            }
-        }
+  override def preInit() {
+    IlluminationProxy.getLightValue = (m, b) => {
+      if (!(0 until 16 contains m)) b
+      else {
+        val c = Colors(m)
+        CLApi.makeRGBLightValue(c.rF, c.gF, c.bF)
+      }
     }
+  }
 
-    override def init(){}
-    override def postInit(){}
+  override def init() {}
+  override def postInit() {}
 
-    override def desc() = "Colored Lights: Illumination lighting"
+  override def desc() = "Colored Lights: Illumination lighting"
 }

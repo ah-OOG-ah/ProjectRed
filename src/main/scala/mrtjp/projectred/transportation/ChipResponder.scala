@@ -5,63 +5,75 @@ import mrtjp.core.item.ItemKey
 
 import scala.collection.mutable.ListBuffer
 
-class ChipItemResponder extends RoutingChip with TChipFilter with TChipPriority
-{
-    def sendPriority = Priorities.PASSIVE
+class ChipItemResponder
+    extends RoutingChip
+    with TChipFilter
+    with TChipPriority {
+  def sendPriority = Priorities.PASSIVE
 
-    override def getSyncResponse(item:ItemKey, rival:SyncResponse):SyncResponse =
-    {
-        val real = invProvider.getInventory
-        val side = invProvider.getInterfacedSide
+  override def getSyncResponse(
+      item: ItemKey,
+      rival: SyncResponse
+  ): SyncResponse = {
+    val real = invProvider.getInventory
+    val side = invProvider.getInterfacedSide
 
-        if (real == null || side < 0) return null
+    if (real == null || side < 0) return null
 
-        if (SyncResponse.isPreferredOver(sendPriority.ordinal, preference, rival) && filterAllows(item))
-        {
-            val inv = InvWrapper.wrap(real).setSlotsFromSide(side)
-            val room = inv.getSpaceForItem(item)
-            if (room > 0) return new SyncResponse().setPriority(sendPriority).setCustomPriority(preference).setItemCount(room)
-        }
-
-        null
+    if (
+      SyncResponse.isPreferredOver(
+        sendPriority.ordinal,
+        preference,
+        rival
+      ) && filterAllows(item)
+    ) {
+      val inv = InvWrapper.wrap(real).setSlotsFromSide(side)
+      val room = inv.getSpaceForItem(item)
+      if (room > 0)
+        return new SyncResponse()
+          .setPriority(sendPriority)
+          .setCustomPriority(preference)
+          .setItemCount(room)
     }
 
-    def filterAllows(item:ItemKey) = !enableFilter || applyFilter(InvWrapper.wrap(filter)).hasItem(item) != filterExclude
+    null
+  }
 
-    override def infoCollection(list:ListBuffer[String])
-    {
-        super.infoCollection(list)
-        addPriorityInfo(list)
-        addFilterInfo(list)
-    }
+  def filterAllows(item: ItemKey) = !enableFilter || applyFilter(
+    InvWrapper.wrap(filter)
+  ).hasItem(item) != filterExclude
 
-    def getChipType = RoutingChipDefs.ITEMRESPONDER
+  override def infoCollection(list: ListBuffer[String]) {
+    super.infoCollection(list)
+    addPriorityInfo(list)
+    addFilterInfo(list)
+  }
 
-    override def enableHiding = false
+  def getChipType = RoutingChipDefs.ITEMRESPONDER
+
+  override def enableHiding = false
 }
 
-class ChipItemOverflowResponder extends ChipItemResponder
-{
-    override def sendPriority = Priorities.DEFAULT
+class ChipItemOverflowResponder extends ChipItemResponder {
+  override def sendPriority = Priorities.DEFAULT
 
-    override def getChipType = RoutingChipDefs.ITEMOVERFLOWRESPONDER
+  override def getChipType = RoutingChipDefs.ITEMOVERFLOWRESPONDER
 
-    override def enableFilter = false
-    override def enablePatterns = false
+  override def enableFilter = false
+  override def enablePatterns = false
 }
 
-class ChipItemTerminator extends ChipItemResponder
-{
-    override def sendPriority = Priorities.TERMINATED
+class ChipItemTerminator extends ChipItemResponder {
+  override def sendPriority = Priorities.TERMINATED
 
-    override def getChipType = RoutingChipDefs.ITEMTERMINATOR
+  override def getChipType = RoutingChipDefs.ITEMTERMINATOR
 }
 
-class ChipDynamicItemResponder extends ChipItemResponder
-{
-    override def getChipType = RoutingChipDefs.DYNAMICITEMRESPONDER
+class ChipDynamicItemResponder extends ChipItemResponder {
+  override def getChipType = RoutingChipDefs.DYNAMICITEMRESPONDER
 
-    override def enableFilter = false
+  override def enableFilter = false
 
-    override def filterAllows(item:ItemKey) = applyFilter(InvWrapper.wrap(invProvider.getInventory)).hasItem(item)
+  override def filterAllows(item: ItemKey) =
+    applyFilter(InvWrapper.wrap(invProvider.getInventory)).hasItem(item)
 }

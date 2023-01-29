@@ -1,9 +1,8 @@
 package mrtjp.projectred.core.libmc.fx;
 
-import codechicken.lib.render.TextureUtils;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.ActiveRenderInfo;
@@ -12,14 +11,17 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import codechicken.lib.render.TextureUtils;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
-public class ParticleManagement
-{
+public class ParticleManagement {
+
     public static String name = "pr-fx";
 
     private final ArrayList<CoreParticle> particles = new ArrayList<CoreParticle>();
@@ -27,13 +29,10 @@ public class ParticleManagement
 
     public static final ParticleManagement instance = new ParticleManagement();
 
-    public CoreParticle spawn(World world, String name, double x, double y, double z)
-    {
-        if (!world.isRemote)
-            return null;
+    public CoreParticle spawn(World world, String name, double x, double y, double z) {
+        if (!world.isRemote) return null;
 
-        if (Minecraft.getMinecraft().gameSettings.particleSetting == 2)
-            return null;
+        if (Minecraft.getMinecraft().gameSettings.particleSetting == 2) return null;
 
         CoreParticle particle = new CoreParticle(world, x, y, z);
         particle.setTextureByName(name);
@@ -43,40 +42,33 @@ public class ParticleManagement
         return particle;
     }
 
-    public void addEffect(CoreParticle effect)
-    {
+    public void addEffect(CoreParticle effect) {
         particleQueue.add(effect);
     }
 
     @SubscribeEvent
-    public void onRenderWorldLast(RenderWorldLastEvent event)
-    {
+    public void onRenderWorldLast(RenderWorldLastEvent event) {
         render(event.partialTicks);
     }
 
     @SubscribeEvent
-    public void onWorldUnload(WorldEvent.Unload event)
-    {
+    public void onWorldUnload(WorldEvent.Unload event) {
         particles.clear();
         particleQueue.clear();
     }
 
     @SubscribeEvent
-    public void tickEnd(ClientTickEvent event)
-    {
-        if (event.phase == Phase.END)
-            updateParticles();
+    public void tickEnd(ClientTickEvent event) {
+        if (event.phase == Phase.END) updateParticles();
     }
 
-    private void updateParticles()
-    {
+    private void updateParticles() {
         Minecraft.getMinecraft().mcProfiler.startSection(name + "-update");
 
         particles.addAll(particleQueue);
         particleQueue.clear();
 
-        for (Iterator<CoreParticle> it = particles.iterator(); it.hasNext();)
-        {
+        for (Iterator<CoreParticle> it = particles.iterator(); it.hasNext();) {
             EntityFX particle = it.next();
 
             particle.onUpdate();
@@ -86,8 +78,7 @@ public class ParticleManagement
         Minecraft.getMinecraft().mcProfiler.endSection();
     }
 
-    private void render(float partialTicks)
-    {
+    private void render(float partialTicks) {
         Minecraft.getMinecraft().mcProfiler.startSection(name + "-render");
 
         EntityLivingBase player = Minecraft.getMinecraft().renderViewEntity;
@@ -102,8 +93,7 @@ public class ParticleManagement
         Minecraft.getMinecraft().mcProfiler.endSection();
     }
 
-    private void renderStandardParticles(float partialTicks)
-    {
+    private void renderStandardParticles(float partialTicks) {
         float rotationX = ActiveRenderInfo.rotationX;
         float rotationZ = ActiveRenderInfo.rotationZ;
         float rotationYZ = ActiveRenderInfo.rotationYZ;
@@ -122,10 +112,16 @@ public class ParticleManagement
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
 
-        for (CoreParticle particle : particles)
-        {
+        for (CoreParticle particle : particles) {
             tessellator.setBrightness(particle.getBrightnessForRender(partialTicks));
-            particle.renderParticle(tessellator, partialTicks, rotationX, rotationXZ, rotationZ, rotationYZ, rotationXY);
+            particle.renderParticle(
+                    tessellator,
+                    partialTicks,
+                    rotationX,
+                    rotationXZ,
+                    rotationZ,
+                    rotationYZ,
+                    rotationXY);
         }
 
         tessellator.draw();

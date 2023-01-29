@@ -7,16 +7,14 @@ package mrtjp.projectred.core.libmc.recipe
 
 import cpw.mods.fml.common.registry.GameRegistry
 
-class SmeltingRecipeBuilder extends RecipeBuilder
-{
-    private var xp = 0.0f
-    def setXP(i:Float):this.type = {xp = i; this}
+class SmeltingRecipeBuilder extends RecipeBuilder {
+  private var xp = 0.0f
+  def setXP(i: Float): this.type = { xp = i; this }
 
-    def registerResults()
-    {
-        compute()
-        inResult.head.matchingInputs.foreach(
-            GameRegistry.addSmelting(_, outResult.head.createOutput, xp)
-        )
-    }
+  def registerResults() {
+    compute()
+    inResult.head.matchingInputs.foreach(
+      GameRegistry.addSmelting(_, outResult.head.createOutput, xp)
+    )
+  }
 }

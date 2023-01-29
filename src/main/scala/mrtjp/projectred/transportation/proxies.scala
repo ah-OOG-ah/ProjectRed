@@ -10,78 +10,81 @@ import mrtjp.projectred.ProjectRedTransportation._
 import mrtjp.projectred.core.{Configurator, IProxy}
 import net.minecraftforge.client.MinecraftForgeClient
 
-class TransportationProxy_server extends IProxy with IPartFactory
-{
-    val guiIDInterfacePipe = 5
-    val guiIDFirewallPipe = 6
-    val guiIDRoutingChips = 7
+class TransportationProxy_server extends IProxy with IPartFactory {
+  val guiIDInterfacePipe = 5
+  val guiIDFirewallPipe = 6
+  val guiIDRoutingChips = 7
 
-    override def preinit()
-    {
-        PacketCustom.assignHandler(TransportationSPH.channel, TransportationSPH)
-    }
+  override def preinit() {
+    PacketCustom.assignHandler(TransportationSPH.channel, TransportationSPH)
+  }
 
-    override def init()
-    {
-        MultiPartRegistry.registerParts(this, Array[String](
-            "pr_pipe", "pr_rbasic", "pr_rinterface",
-            "pr_rrequest", "pr_rfire",
-            "pr_pt", "pr_rpt", "pr_netvalve", "pr_netlatency"
-        ))
+  override def init() {
+    MultiPartRegistry.registerParts(
+      this,
+      Array[String](
+        "pr_pipe",
+        "pr_rbasic",
+        "pr_rinterface",
+        "pr_rrequest",
+        "pr_rfire",
+        "pr_pt",
+        "pr_rpt",
+        "pr_netvalve",
+        "pr_netlatency"
+      )
+    )
 
-        itemPartPipe = new ItemPartPipe
-        itemRoutingChip = new ItemRoutingChip
-        itemRouterUtility = new ItemRouterUtility
+    itemPartPipe = new ItemPartPipe
+    itemRoutingChip = new ItemRoutingChip
+    itemRouterUtility = new ItemRouterUtility
 
-        for (i <- 0 until Configurator.routerUpdateThreadCount) new TableUpdateThread(i)
+    for (i <- 0 until Configurator.routerUpdateThreadCount)
+      new TableUpdateThread(i)
 
-        TransportationRecipes.initRecipes()
-    }
+    TransportationRecipes.initRecipes()
+  }
 
-    override def postinit(){}
+  override def postinit() {}
 
-    import mrtjp.projectred.transportation.PipeDefs._
-    override def createPart(name:String, client:Boolean) = name match
-    {
-        case BASIC.partname => new BasicPipePart
-        case ROUTEDJUNCTION.partname => new RoutedJunctionPipePart
-        case ROUTEDINTERFACE.partname => new RoutedInterfacePipePart
-        //case ROUTEDCRAFTING.partname => new RoutedCraftingPipePartø
-        case ROUTEDREQUEST.partname => new RoutedRequestPipePart
-        //case ROUTEDEXTENSION.partname => new RoutedExtensionPipePart
-        case ROUTEDFIREWALL.partname => new RoutedFirewallPipe
-        case PRESSURETUBE.partname => new PressureTube
-        case RESISTANCETUBE.partname => new ResistanceTube
-        case NETWORKVALVE.partname => new NetworkValvePipePart
-        case NETWORKLATENCY.partname => new NetworkLatencyPipePart
-        case _ => null
-    }
+  import mrtjp.projectred.transportation.PipeDefs._
+  override def createPart(name: String, client: Boolean) = name match {
+    case BASIC.partname           => new BasicPipePart
+    case ROUTEDJUNCTION.partname  => new RoutedJunctionPipePart
+    case ROUTEDINTERFACE.partname => new RoutedInterfacePipePart
+    // case ROUTEDCRAFTING.partname => new RoutedCraftingPipePartø
+    case ROUTEDREQUEST.partname => new RoutedRequestPipePart
+    // case ROUTEDEXTENSION.partname => new RoutedExtensionPipePart
+    case ROUTEDFIREWALL.partname => new RoutedFirewallPipe
+    case PRESSURETUBE.partname   => new PressureTube
+    case RESISTANCETUBE.partname => new ResistanceTube
+    case NETWORKVALVE.partname   => new NetworkValvePipePart
+    case NETWORKLATENCY.partname => new NetworkLatencyPipePart
+    case _                       => null
+  }
 
-    override def version = "@VERSION@"
-    override def build = "@BUILD_NUMBER@"
+  override def version = "@VERSION@"
+  override def build = "@BUILD_NUMBER@"
 }
 
-class TransportationProxy_client extends TransportationProxy_server
-{
-    @SideOnly(Side.CLIENT)
-    override def preinit()
-    {
-        super.preinit()
-        PacketCustom.assignHandler(TransportationCPH.channel, TransportationCPH)
-    }
+class TransportationProxy_client extends TransportationProxy_server {
+  @SideOnly(Side.CLIENT)
+  override def preinit() {
+    super.preinit()
+    PacketCustom.assignHandler(TransportationCPH.channel, TransportationCPH)
+  }
 
-    @SideOnly(Side.CLIENT)
-    override def init()
-    {
-        super.init()
-        MinecraftForgeClient.registerItemRenderer(itemPartPipe, PipeItemRenderer)
-        MicroMaterialRegistry.registerHighlightRenderer(PipeRSHighlightRenderer)
-        MicroMaterialRegistry.registerHighlightRenderer(PipeColourHighlightRenderer)
+  @SideOnly(Side.CLIENT)
+  override def init() {
+    super.init()
+    MinecraftForgeClient.registerItemRenderer(itemPartPipe, PipeItemRenderer)
+    MicroMaterialRegistry.registerHighlightRenderer(PipeRSHighlightRenderer)
+    MicroMaterialRegistry.registerHighlightRenderer(PipeColourHighlightRenderer)
 
-        GuiHandler.register(GuiInterfacePipe, guiIDInterfacePipe)
-        GuiHandler.register(GuiFirewallPipe, guiIDFirewallPipe)
-        GuiHandler.register(GuiChipConfig, guiIDRoutingChips)
-    }
+    GuiHandler.register(GuiInterfacePipe, guiIDInterfacePipe)
+    GuiHandler.register(GuiFirewallPipe, guiIDFirewallPipe)
+    GuiHandler.register(GuiChipConfig, guiIDRoutingChips)
+  }
 }
 
 object TransportationProxy extends TransportationProxy_client

@@ -1,11 +1,11 @@
 package mrtjp.projectred.core.libmc.fx;
 
-import net.minecraft.world.World;
-
 import java.util.Random;
 
-public abstract class ParticleLogic
-{
+import net.minecraft.world.World;
+
+public abstract class ParticleLogic {
+
     protected CoreParticle particle;
     protected Random rand = new Random();
     protected int priority = 1;
@@ -14,26 +14,22 @@ public abstract class ParticleLogic
     private boolean terminateWhenFinished = false;
     protected boolean firstTick = true;
 
-    public ParticleLogic setTerminate(boolean kill)
-    {
+    public ParticleLogic setTerminate(boolean kill) {
         terminateWhenFinished = kill;
         return this;
     }
 
-    public ParticleLogic setFinal(boolean flag)
-    {
+    public ParticleLogic setFinal(boolean flag) {
         finalLogic = flag;
         return this;
     }
 
-    public ParticleLogic setPriority(int pri)
-    {
+    public ParticleLogic setPriority(int pri) {
         priority = pri;
         return this;
     }
 
-    public boolean isTerminating()
-    {
+    public boolean isTerminating() {
         return terminateWhenFinished;
     }
 
@@ -42,44 +38,34 @@ public abstract class ParticleLogic
     @Override
     public abstract ParticleLogic clone();
 
-    public void onUpdate(World world, CoreParticle particle)
-    {
+    public void onUpdate(World world, CoreParticle particle) {
         this.particle = particle;
 
-        if (!world.isRemote)
-        {
-            if (particle != null)
-                particle.setDead();
+        if (!world.isRemote) {
+            if (particle != null) particle.setDead();
             return;
         }
 
-        if (particle != null)
-            doUpdate();
+        if (particle != null) doUpdate();
 
-        if (firstTick)
-            firstTick = false;
+        if (firstTick) firstTick = false;
     }
 
-    public int getPriority()
-    {
+    public int getPriority() {
         return priority;
     }
 
-    protected void finishLogic()
-    {
+    protected void finishLogic() {
         finished = true;
 
-        if (particle != null && terminateWhenFinished)
-            particle.setDead();
+        if (particle != null && terminateWhenFinished) particle.setDead();
     }
 
-    public boolean isFinalLogic()
-    {
+    public boolean isFinalLogic() {
         return finalLogic;
     }
 
-    public boolean getFinished()
-    {
+    public boolean getFinished() {
         return finished;
     }
 }

@@ -1,11 +1,13 @@
 package mrtjp.projectred.core.libmc.fx;
 
-import codechicken.lib.vec.Vector3;
 import mrtjp.core.math.MathLib;
+
 import net.minecraft.entity.Entity;
 
-public class ParticleLogicArcToEntity extends ParticleLogic
-{
+import codechicken.lib.vec.Vector3;
+
+public class ParticleLogicArcToEntity extends ParticleLogic {
+
     private Vector3 start;
     private Entity target;
     private Vector3 firstControl;
@@ -15,8 +17,7 @@ public class ParticleLogicArcToEntity extends ParticleLogic
     private float offsetFactor;
     private float halfOffsetFactor;
 
-    public ParticleLogicArcToEntity(Vector3 start, Entity target)
-    {
+    public ParticleLogicArcToEntity(Vector3 start, Entity target) {
         this.start = start.copy();
         percent = 0.0F;
         speed = 0.03F;
@@ -27,11 +28,16 @@ public class ParticleLogicArcToEntity extends ParticleLogic
         generateControlPoints();
     }
 
-    public ParticleLogicArcToEntity generateControlPoints()
-    {
-        firstControl = new Vector3(start.x + (target.posX - start.x) / 3.0D, start.y + (target.posY - start.y) / 3.0D, start.z + (target.posZ - start.z) / 3.0D);
+    public ParticleLogicArcToEntity generateControlPoints() {
+        firstControl = new Vector3(
+                start.x + (target.posX - start.x) / 3.0D,
+                start.y + (target.posY - start.y) / 3.0D,
+                start.z + (target.posZ - start.z) / 3.0D);
 
-        secondControl = new Vector3(start.x + (target.posX - start.x) / 3.0D * 2.0D, start.y + (target.posY - start.y) / 3.0D * 2.0D, start.z + (target.posZ - start.z) / 3.0D * 2.0D);
+        secondControl = new Vector3(
+                start.x + (target.posX - start.x) / 3.0D * 2.0D,
+                start.y + (target.posY - start.y) / 3.0D * 2.0D,
+                start.z + (target.posZ - start.z) / 3.0D * 2.0D);
 
         double offsetX = rand.nextFloat() * offsetFactor - halfOffsetFactor;
         double offsetZ = rand.nextFloat() * offsetFactor - halfOffsetFactor;
@@ -44,35 +50,36 @@ public class ParticleLogicArcToEntity extends ParticleLogic
         return this;
     }
 
-    public ParticleLogicArcToEntity setControlPoints(Vector3 first, Vector3 second)
-    {
+    public ParticleLogicArcToEntity setControlPoints(Vector3 first, Vector3 second) {
         firstControl = first;
         secondControl = second;
         return this;
     }
 
-    public ParticleLogicArcToEntity setSpeed(float speed)
-    {
+    public ParticleLogicArcToEntity setSpeed(float speed) {
         this.speed = speed;
         return this;
     }
 
     @Override
-    public void doUpdate()
-    {
+    public void doUpdate() {
         percent += speed;
-        if (percent >= 1.0F)
-        {
+        if (percent >= 1.0F) {
             finishLogic();
             return;
         }
-        Vector3 bez = MathLib.bezier(start, firstControl, secondControl, new Vector3(target.posX, target.posY, target.posZ).add(new Vector3(0.0D, target.getEyeHeight(), 0.0D)), percent);
+        Vector3 bez = MathLib.bezier(
+                start,
+                firstControl,
+                secondControl,
+                new Vector3(target.posX, target.posY, target.posZ).add(new Vector3(0.0D, target.getEyeHeight(), 0.0D)),
+                percent);
         particle.setPosition(bez.x, bez.y, bez.z);
     }
 
     @Override
-    public ParticleLogic clone()
-    {
-        return new ParticleLogicArcToEntity(particle.position(), target).setSpeed(speed).setControlPoints(firstControl, secondControl).setFinal(finalLogic).setPriority(priority);
+    public ParticleLogic clone() {
+        return new ParticleLogicArcToEntity(particle.position(), target).setSpeed(speed)
+                .setControlPoints(firstControl, secondControl).setFinal(finalLogic).setPriority(priority);
     }
 }

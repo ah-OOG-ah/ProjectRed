@@ -13,71 +13,66 @@ import mrtjp.projectred.compatibility.IPRPlugin
 import mrtjp.projectred.core.Configurator
 import net.minecraft.inventory.IInventory
 
-object PluginStorageDrawers extends IPRPlugin
-{
+object PluginStorageDrawers extends IPRPlugin {
   override def getModIDs = Array("StorageDrawers")
 
   override def isEnabled = Configurator.compat_StorageDrawers
 
-  override def preInit(){}
+  override def preInit() {}
 
-  override def init(){}
+  override def init() {}
 
-  override def postInit()
-  {
+  override def postInit() {
     InvWrapper.register(StorageDrawersInvWrapperRegister)
   }
 
   override def desc() = "Storage Drawers pipe interactions"
 }
 
-object StorageDrawersInvWrapperRegister extends IInvWrapperRegister
-{
+object StorageDrawersInvWrapperRegister extends IInvWrapperRegister {
   override def wrapperID = "storagedrawers"
-  override def matches(inv:IInventory) = inv.isInstanceOf[IDrawerGroup]
-  override def create(inv:IInventory) = new StorageDrawersInvWrapper(inv)
+  override def matches(inv: IInventory) = inv.isInstanceOf[IDrawerGroup]
+  override def create(inv: IInventory) = new StorageDrawersInvWrapper(inv)
 }
 
-class StorageDrawersInvWrapper(inv:IInventory) extends InvWrapper(inv)
-{
+class StorageDrawersInvWrapper(inv: IInventory) extends InvWrapper(inv) {
   def getDrawers = inv.asInstanceOf[IDrawerGroup]
 
-  override def getSpaceForItem(item:ItemKey): Int =
-  {
+  override def getSpaceForItem(item: ItemKey): Int = {
     var freeSpace = 0
-    for(i <- 0 until getDrawers.getDrawerCount){
+    for (i <- 0 until getDrawers.getDrawerCount) {
       val drawer = getDrawers.getDrawer(i)
 
-      if(drawer.canItemBeStored(item.testStack)){
-        freeSpace += drawer.getMaxCapacity(item.testStack) - drawer.getStoredItemCount
+      if (drawer.canItemBeStored(item.testStack)) {
+        freeSpace += drawer.getMaxCapacity(
+          item.testStack
+        ) - drawer.getStoredItemCount
         drawer match {
           case voidable: IVoidable if voidable.isVoid => return Int.MaxValue
-          case _ =>
+          case _                                      =>
         }
       }
     }
     freeSpace
   }
 
-  override def hasSpaceForItem(item:ItemKey) = getSpaceForItem(item) > 0
+  override def hasSpaceForItem(item: ItemKey) = getSpaceForItem(item) > 0
 
-  override def getItemCount(item:ItemKey) =
-  {
+  override def getItemCount(item: ItemKey) = {
     var stored = 0
-    for(i <- 0 until getDrawers.getDrawerCount){
+    for (i <- 0 until getDrawers.getDrawerCount) {
       val drawer = getDrawers.getDrawer(i)
 
-      if(drawer.canItemBeExtracted(item.testStack)){
+      if (drawer.canItemBeExtracted(item.testStack)) {
         stored += drawer.getStoredItemCount
       }
     }
     stored
   }
 
-  override def hasItem(item:ItemKey) = getItemCount(item) > 0
+  override def hasItem(item: ItemKey) = getItemCount(item) > 0
 
-  override def injectItem(item:ItemKey, toAdd:Int):Int =
-  {
+  override def injectItem(item: ItemKey, toAdd: Int): Int = {
     var added = 0
 
     for (mergePass <- Array(true, false)) {
@@ -87,15 +82,20 @@ class StorageDrawersInvWrapper(inv:IInventory) extends InvWrapper(inv)
         if (drawer.canItemBeStored(item.testStack)) {
           val spaceLeft = drawer match {
             case voidable: IVoidable if voidable.isVoid => Int.MaxValue
-            case _ => drawer.getMaxCapacity(item.testStack) - drawer.getStoredItemCount
+            case _ =>
+              drawer.getMaxCapacity(item.testStack) - drawer.getStoredItemCount
           }
-          val toAddToDrawer = if (mergePass && drawer.isEmpty) 0 else math.min(spaceLeft, toAdd - added)
+          val toAddToDrawer =
+            if (mergePass && drawer.isEmpty) 0
+            else math.min(spaceLeft, toAdd - added)
 
           if (toAddToDrawer > 0) {
             if (drawer.isEmpty) {
               drawer.setStoredItemRedir(item.testStack, toAddToDrawer)
             } else {
-              drawer.setStoredItemCount(drawer.getStoredItemCount + toAddToDrawer)
+              drawer.setStoredItemCount(
+                drawer.getStoredItemCount + toAddToDrawer
+              )
             }
           }
 
@@ -107,32 +107,32 @@ class StorageDrawersInvWrapper(inv:IInventory) extends InvWrapper(inv)
     added
   }
 
-  override def extractItem(item:ItemKey, toExtract:Int) =
-  {
+  override def extractItem(item: ItemKey, toExtract: Int) = {
     var extracted = 0
 
-    for(i <- 0 until getDrawers.getDrawerCount){
+    for (i <- 0 until getDrawers.getDrawerCount) {
       val drawer = getDrawers.getDrawer(i)
 
-      if(drawer.canItemBeExtracted(item.testStack)){
+      if (drawer.canItemBeExtracted(item.testStack)) {
         val stored = drawer.getStoredItemCount
         val toExtractFromDrawer = math.min(stored, toExtract - extracted)
-        drawer.setStoredItemCount(drawer.getStoredItemCount - toExtractFromDrawer)
+        drawer.setStoredItemCount(
+          drawer.getStoredItemCount - toExtractFromDrawer
+        )
         extracted += toExtractFromDrawer
       }
     }
     extracted
   }
 
-  override def getAllItemStacks =
-  {
+  override def getAllItemStacks = {
     var items = Map[ItemKey, Int]()
 
-    for(i <- 0 until getDrawers.getDrawerCount){
+    for (i <- 0 until getDrawers.getDrawerCount) {
       val drawer = getDrawers.getDrawer(i)
 
       val key = ItemKey.get(drawer.getStoredItemPrototype)
-      if(key != null)
+      if (key != null)
         items += key -> (drawer.getStoredItemCount + items.getOrElse(key, 0))
     }
     items

@@ -59,7 +59,7 @@ trait TPowerStorage extends TileMachine with TPoweredMachine {
   }
 
   override def read(in: MCDataInput, key: Int) = key match {
-    case 5 =>
+    case 5 if world.isRemote =>
       storage = in.readInt()
       markRender()
     case _ => super.read(in, key)

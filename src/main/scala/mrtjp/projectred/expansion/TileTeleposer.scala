@@ -57,8 +57,8 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
   }
 
   override def read(in: MCDataInput, key: Int) = key match {
-    case 2 => doTransformFX()
-    case 3 =>
+    case 2 if world.isRemote => doTransformFX()
+    case 3 if world.isRemote =>
       isCharged = in.readBoolean()
       markRender()
     case _ => super.read(in, key)

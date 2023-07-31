@@ -80,8 +80,8 @@ class TileBarrel
   }
 
   override def read(in: MCDataInput, key: Int) = key match {
-    case 1 => silentClear()
-    case 2 =>
+    case 1 if world.isRemote => silentClear()
+    case 2 if world.isRemote =>
       silentClear()
       item = ItemKey.get(in.readItemStack())
       storage = in.readInt()

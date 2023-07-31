@@ -64,7 +64,7 @@ class TileChargingBench
   }
 
   override def read(in: MCDataInput, key: Int) = key match {
-    case 5 =>
+    case 5 if world.isRemote =>
       isCharged = in.readBoolean()
       markRender()
     case _ => super.read(in, key)

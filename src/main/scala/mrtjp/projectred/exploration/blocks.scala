@@ -302,7 +302,7 @@ class TileLily extends InstancedBlockTile with TPlantTile {
   }
 
   override def read(in: MCDataInput, key: Int) = key match {
-    case 1 =>
+    case 1 if world.isRemote =>
       phase = in.readByte()
       markRender()
     case _ => super.read(in, key)

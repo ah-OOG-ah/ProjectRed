@@ -60,7 +60,7 @@ trait TMotorTile
   }
 
   abstract override def read(in: MCDataInput, key: Int) = key match {
-    case 2 =>
+    case 2 if world.isRemote =>
       isCharged = in.readBoolean()
       isMoving = in.readBoolean()
       markRender()

@@ -204,8 +204,8 @@ trait TConnectableInstTile extends InstancedBlockTile with TTileConnectable {
   }
 
   abstract override def read(in: MCDataInput, key: Int) = key match {
-    case 31 => connMap = in.readLong()
-    case _  => super.read(in, key)
+    case 31 if world.isRemote => connMap = in.readLong()
+    case _                    => super.read(in, key)
   }
 
   def sendConnUpdate() =

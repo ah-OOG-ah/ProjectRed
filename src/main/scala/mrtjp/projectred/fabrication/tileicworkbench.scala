@@ -71,7 +71,7 @@ abstract class TileICMachine extends InstancedBlockTile with TTileOrient {
   }
 
   override def read(in: MCDataInput, key: Int) = key match {
-    case 1 =>
+    case 1 if world.isRemote =>
       orientation = in.readByte()
       markRender()
     case _ => super.read(in, key)

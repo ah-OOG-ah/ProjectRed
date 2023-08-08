@@ -13,6 +13,8 @@ import mrtjp.projectred.compatibility.IPRPlugin
 import mrtjp.projectred.core.Configurator
 import net.minecraft.inventory.IInventory
 
+import scala.util.control.Breaks.{break, breakable}
+
 object PluginStorageDrawers extends IPRPlugin {
   override def getModIDs = Array("StorageDrawers")
 
@@ -43,7 +45,7 @@ class StorageDrawersInvWrapper(inv: IInventory) extends InvWrapper(inv) {
     for (i <- 0 until getDrawers.getDrawerCount) {
       val drawer = getDrawers.getDrawer(i)
 
-      if (drawer.canItemBeStored(item.testStack)) {
+      if (drawer != null && drawer.canItemBeStored(item.testStack)) {
         freeSpace += drawer.getMaxCapacity(
           item.testStack
         ) - drawer.getStoredItemCount
@@ -63,7 +65,7 @@ class StorageDrawersInvWrapper(inv: IInventory) extends InvWrapper(inv) {
     for (i <- 0 until getDrawers.getDrawerCount) {
       val drawer = getDrawers.getDrawer(i)
 
-      if (drawer.canItemBeExtracted(item.testStack)) {
+      if (drawer != null && drawer.canItemBeExtracted(item.testStack)) {
         stored += drawer.getStoredItemCount
       }
     }
@@ -79,7 +81,7 @@ class StorageDrawersInvWrapper(inv: IInventory) extends InvWrapper(inv) {
       for (i <- 0 until getDrawers.getDrawerCount) {
         val drawer = getDrawers.getDrawer(i)
 
-        if (drawer.canItemBeStored(item.testStack)) {
+        if (drawer != null && drawer.canItemBeStored(item.testStack)) {
           val spaceLeft = drawer match {
             case voidable: IVoidable if voidable.isVoid => Int.MaxValue
             case _ =>
@@ -113,7 +115,7 @@ class StorageDrawersInvWrapper(inv: IInventory) extends InvWrapper(inv) {
     for (i <- 0 until getDrawers.getDrawerCount) {
       val drawer = getDrawers.getDrawer(i)
 
-      if (drawer.canItemBeExtracted(item.testStack)) {
+      if (drawer != null && drawer.canItemBeExtracted(item.testStack)) {
         val stored = drawer.getStoredItemCount
         val toExtractFromDrawer = math.min(stored, toExtract - extracted)
         drawer.setStoredItemCount(
@@ -129,11 +131,14 @@ class StorageDrawersInvWrapper(inv: IInventory) extends InvWrapper(inv) {
     var items = Map[ItemKey, Int]()
 
     for (i <- 0 until getDrawers.getDrawerCount) {
-      val drawer = getDrawers.getDrawer(i)
+      breakable { // Turns "break" into a "continue"
+        val drawer = getDrawers.getDrawer(i)
+        if (drawer == null) { break }
 
-      val key = ItemKey.get(drawer.getStoredItemPrototype)
-      if (key != null)
+        val key = ItemKey.get(drawer.getStoredItemPrototype)
+        if (key == null) { break }
         items += key -> (drawer.getStoredItemCount + items.getOrElse(key, 0))
+      }
     }
     items
   }

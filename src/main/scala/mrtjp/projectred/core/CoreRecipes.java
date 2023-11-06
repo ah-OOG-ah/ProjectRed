@@ -1,6 +1,34 @@
 package mrtjp.projectred.core;
 
-import static mrtjp.projectred.core.PartDefs.*;
+import static mrtjp.projectred.core.PartDefs.ANODE;
+import static mrtjp.projectred.core.PartDefs.CATHODE;
+import static mrtjp.projectred.core.PartDefs.CONDUCTIVEPLATE;
+import static mrtjp.projectred.core.PartDefs.COPPERCOIL;
+import static mrtjp.projectred.core.PartDefs.ELECTROSILICON;
+import static mrtjp.projectred.core.PartDefs.ELECTROTINEINGOT;
+import static mrtjp.projectred.core.PartDefs.ELECTROTINEIRONCOMPOUND;
+import static mrtjp.projectred.core.PartDefs.ELECTROTINESILICONCOMPOUND;
+import static mrtjp.projectred.core.PartDefs.ENERGIZEDSILICON;
+import static mrtjp.projectred.core.PartDefs.ENERGIZEDSILICONCHIP;
+import static mrtjp.projectred.core.PartDefs.GLOWINGSILICONCOMPOUND;
+import static mrtjp.projectred.core.PartDefs.GOLDCOIL;
+import static mrtjp.projectred.core.PartDefs.INFUSEDSILICON;
+import static mrtjp.projectred.core.PartDefs.IRONCOIL;
+import static mrtjp.projectred.core.PartDefs.MOTOR;
+import static mrtjp.projectred.core.PartDefs.PLATE;
+import static mrtjp.projectred.core.PartDefs.PLATFORMEDPLATE;
+import static mrtjp.projectred.core.PartDefs.POINTER;
+import static mrtjp.projectred.core.PartDefs.PartVal;
+import static mrtjp.projectred.core.PartDefs.REDINGOT;
+import static mrtjp.projectred.core.PartDefs.REDIRONCOMPOUND;
+import static mrtjp.projectred.core.PartDefs.REDSILICONCOMPOUND;
+import static mrtjp.projectred.core.PartDefs.SAIL;
+import static mrtjp.projectred.core.PartDefs.SANDYCOALCOMPOUND;
+import static mrtjp.projectred.core.PartDefs.SILICON;
+import static mrtjp.projectred.core.PartDefs.SILICONBOULE;
+import static mrtjp.projectred.core.PartDefs.SILICONCHIP;
+import static mrtjp.projectred.core.PartDefs.WIREDPLATE;
+import static mrtjp.projectred.core.PartDefs.WOVENCLOTH;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -13,7 +41,13 @@ import codechicken.microblock.handler.MicroblockProxy;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mrtjp.core.color.Colors_old;
 import mrtjp.projectred.ProjectRedCore;
-import mrtjp.projectred.core.libmc.recipe.*;
+import mrtjp.projectred.core.libmc.recipe.Input;
+import mrtjp.projectred.core.libmc.recipe.ItemOut;
+import mrtjp.projectred.core.libmc.recipe.MicroIn;
+import mrtjp.projectred.core.libmc.recipe.Output;
+import mrtjp.projectred.core.libmc.recipe.RecipeLib;
+import mrtjp.projectred.core.libmc.recipe.ShapedRecipeBuilder;
+import mrtjp.projectred.core.libmc.recipe.ShapelessRecipeBuilder;
 
 public class CoreRecipes {
 

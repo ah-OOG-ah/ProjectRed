@@ -1,6 +1,10 @@
 package mrtjp.projectred.exploration;
 
-import net.minecraft.item.*;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemPickaxe;
+import net.minecraft.item.ItemSpade;
+import net.minecraft.item.ItemSword;
 
 /**
  * Proxy scala constructor calls to Java. Fixes weird compiler issue

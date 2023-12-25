@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 class TileFilteredImporter
     extends TileItemImporter
@@ -89,7 +90,7 @@ class TileFilteredImporter
   }
 
   def sendColourUpdate() {
-    writeStream(6).writeByte(colour).sendToChunk()
+    streamToSend(writeStream(6).writeByte(colour)).sendToChunk()
   }
 
   def clientCycleColourUp() {
@@ -199,11 +200,11 @@ object RenderFilteredImporter
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TActiveDevice])
     if (te != null)
-      (te.side, te.rotation, if (te.active || te.powered) iconT2 else iconT1)
-    else (0, 0, iconT1)
+      new ImmutableTriple(te.side, te.rotation, if (te.active || te.powered) iconT2 else iconT1)
+    else new ImmutableTriple(0, 0, iconT1)
   }
 
-  override def getInvData = (0, 0, iconT1)
+  override def getInvData = new ImmutableTriple(0, 0, iconT1)
 
   override def getIcon(s: Int, meta: Int) = s match {
     case 0 => bottom

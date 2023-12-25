@@ -6,7 +6,6 @@
 package mrtjp.projectred.expansion
 
 import java.util.UUID
-
 import codechicken.lib.data.MCDataInput
 import codechicken.lib.gui.GuiDraw
 import codechicken.lib.raytracer.RayTracer
@@ -35,6 +34,7 @@ import net.minecraft.world.{IBlockAccess, WorldServer}
 import net.minecraftforge.common.util.FakePlayerFactory
 import net.minecraftforge.event.ForgeEventFactory
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 import scala.ref.WeakReference
 
@@ -361,11 +361,11 @@ object RenderBlockPlacer extends TInstancedBlockRender with TCubeMapRender {
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TActiveDevice])
     if (te != null)
-      (te.side, te.rotation, if (te.active || te.powered) iconT2 else iconT1)
-    else (0, 0, iconT1)
+      new ImmutableTriple(te.side, te.rotation, if (te.active || te.powered) iconT2 else iconT1)
+    else new ImmutableTriple(0, 0, iconT1)
   }
 
-  override def getInvData = (0, 0, iconT1)
+  override def getInvData = new ImmutableTriple(0, 0, iconT1)
 
   override def getIcon(s: Int, meta: Int) = s match {
     case 0 => bottom

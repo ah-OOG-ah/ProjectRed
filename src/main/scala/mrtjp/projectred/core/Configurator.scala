@@ -85,6 +85,7 @@ object Configurator extends ModConfig("ProjRed|Core") {
 
   override protected def initValues() {
     val general = new BaseCategory(
+      this,
       "General Settings",
       "Contains basic settings for the mod."
     )
@@ -138,6 +139,7 @@ object Configurator extends ModConfig("ProjRed|Core") {
     )
 
     val machines = new BaseCategory(
+      this,
       "Machine Settings",
       "Contains settings related to machines and devices."
     )
@@ -148,6 +150,7 @@ object Configurator extends ModConfig("ProjRed|Core") {
     )
 
     val rendering = new BaseCategory(
+      this,
       "Render Settings",
       "Contains settings related to how things render in-game."
     )
@@ -178,6 +181,7 @@ object Configurator extends ModConfig("ProjRed|Core") {
     )
 
     val gen = new BaseCategory(
+      this,
       "World Gen",
       "Contains settings related to world gen. You can enable/disable each ore or strucure, change retro generation settings, and increase how rare something is by increasing the resistance value."
     )
@@ -234,6 +238,7 @@ object Configurator extends ModConfig("ProjRed|Core") {
     gen_SpreadingMoss = gen.put("Spreading Moss", gen_SpreadingMoss)
 
     val compat = new BaseCategory(
+      this,
       "Compatibility",
       "Control the loading of various compatibility hooks. These settings are ignored unless the Compatibility module is installed."
     )

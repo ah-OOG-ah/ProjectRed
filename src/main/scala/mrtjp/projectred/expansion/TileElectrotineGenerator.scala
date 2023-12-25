@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 class TileElectrotineGenerator
     extends TPoweredMachine
@@ -75,7 +76,7 @@ class TileElectrotineGenerator
   }
 
   def sendRenderUpdate() {
-    writeStream(5).writeBoolean(isCharged).writeBoolean(isBurning).sendToChunk()
+    streamToSend(writeStream(5).writeBoolean(isCharged).writeBoolean(isBurning)).sendToChunk()
   }
 
   override def getBlock = ProjectRedExpansion.machine1
@@ -283,11 +284,11 @@ object RenderElectrotineGenerator extends TCubeMapRender {
         case (false, true)  => iconT3
         case (true, true)   => iconT4
       }
-      (te.side, te.rotation, iconT)
-    } else (0, 0, iconT1)
+      new ImmutableTriple(te.side, te.rotation, iconT)
+    } else new ImmutableTriple(0, 0, iconT1)
   }
 
-  override def getInvData = (0, 0, iconT1)
+  override def getInvData = new ImmutableTriple(0, 0, iconT1)
 
   override def getIcon(side: Int, meta: Int) = side match {
     case 0 => bottom

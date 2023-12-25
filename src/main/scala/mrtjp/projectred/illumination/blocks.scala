@@ -1,13 +1,11 @@
 package mrtjp.projectred.illumination
 
-import java.util.{List => JList, Random}
-
 import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.vec.{BlockCoord, Vector3}
 import codechicken.multipart.IRedstoneConnectorBlock
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import mrtjp.core.block.{BlockCore, InstancedBlock, InstancedBlockTile}
-import mrtjp.core.color.{Colors, Colors_old}
+import mrtjp.core.color.Colors
 import mrtjp.core.world.WorldLib
 import mrtjp.projectred.ProjectRedIllumination
 import mrtjp.projectred.core.libmc.PRLib
@@ -23,6 +21,8 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.IIcon
 import net.minecraft.world.{IBlockAccess, World}
+
+import java.util.{Random, List => JList}
 
 class BlockLamp
     extends InstancedBlock(
@@ -42,11 +42,10 @@ class BlockLamp
 
   override def isBlockNormalCube = true
 
-  override def getSubBlocks(b: Item, tab: CreativeTabs, list: JList[_]) = {
+  @SideOnly(Side.CLIENT)
+  override def getSubBlocks(b: Item, tab: CreativeTabs, list: JList[ItemStack]) = {
     for (i <- 0 until 32)
-      list
-        .asInstanceOf[JList[ItemStack]]
-        .add(new ItemStack(ProjectRedIllumination.blockLamp, 1, i))
+      list.add(new ItemStack(ProjectRedIllumination.blockLamp, 1, i))
   }
 
   override def canCreatureSpawn(

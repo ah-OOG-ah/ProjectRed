@@ -1,7 +1,5 @@
 package mrtjp.projectred.exploration
 
-import java.util.{List => JList}
-
 import codechicken.microblock.Saw
 import cpw.mods.fml.common.registry.GameRegistry
 import cpw.mods.fml.relauncher.{Side, SideOnly}
@@ -22,13 +20,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.{Entity, EntityLivingBase}
 import net.minecraft.init.{Blocks, Items}
 import net.minecraft.item.Item.ToolMaterial
-import net.minecraft.item.Item.ToolMaterial.{
-  EMERALD => toolMaterialEmerald,
-  GOLD => toolMaterialGold,
-  IRON => toolMaterialIron,
-  STONE => toolMaterialStone,
-  WOOD => toolMaterialWood
-}
+import net.minecraft.item.Item.ToolMaterial.{EMERALD => toolMaterialEmerald, GOLD => toolMaterialGold, IRON => toolMaterialIron, STONE => toolMaterialStone, WOOD => toolMaterialWood}
 import net.minecraft.item.ItemArmor.ArmorMaterial
 import net.minecraft.item._
 import net.minecraft.nbt.NBTTagCompound
@@ -36,6 +28,8 @@ import net.minecraft.util.{EnumChatFormatting, IIcon}
 import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.EnumPlantType
 import org.lwjgl.input.Keyboard
+
+import java.util.{List => JList}
 
 class ItemBackpack extends ItemCore("projectred.exploration.backpack") {
   setHasSubtypes(true)
@@ -71,9 +65,9 @@ class ItemBackpack extends ItemCore("projectred.exploration.backpack") {
     GuiBackpack.open(player, ItemBackpack.createContainer(player))
   }
 
-  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[_]) {
+  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[ItemStack]) {
     for (i <- 0 until 16)
-      list.asInstanceOf[JList[ItemStack]].add(new ItemStack(this, 1, i))
+      list.add(new ItemStack(this, 1, i))
   }
 
   private val icons = new Array[IIcon](16)
@@ -88,7 +82,7 @@ class ItemBackpack extends ItemCore("projectred.exploration.backpack") {
   override def addInformation(
       stack: ItemStack,
       player: EntityPlayer,
-      list: JList[_],
+      list: JList[String],
       flag: Boolean
   ) {
     if (
@@ -96,9 +90,7 @@ class ItemBackpack extends ItemCore("projectred.exploration.backpack") {
         Keyboard.KEY_RSHIFT
       )
     )
-      list
-        .asInstanceOf[JList[String]]
-        .add(
+      list.add(
           EnumChatFormatting.GRAY.toString + (if (ItemBackpack.hasBagInv(stack))
                                                 ItemBackpack
                                                   .getNumberOfItems(stack)
@@ -213,11 +205,7 @@ object ToolDefs {
   private val peridot = PartDefs.PERIDOT.makeStack
   private val diamond = new ItemStack(Items.diamond)
 
-  import mrtjp.projectred.ProjectRedExploration.{
-    toolMaterialPeridot,
-    toolMaterialRuby,
-    toolMaterialSapphire
-  }
+  import mrtjp.projectred.ProjectRedExploration.{toolMaterialPeridot, toolMaterialRuby, toolMaterialSapphire}
 
   val RUBYAXE = ToolDef("axeruby", toolMaterialRuby, ruby)
   val SAPPHIREAXE = ToolDef("axesapphire", toolMaterialSapphire, sapphire)
@@ -395,11 +383,7 @@ class ItemGemSickle(override val toolDef: ToolDef)
 }
 
 object ArmorDefs {
-  import mrtjp.projectred.ProjectRedExploration.{
-    armorMatrialPeridot,
-    armorMatrialRuby,
-    armorMatrialSapphire
-  }
+  import mrtjp.projectred.ProjectRedExploration.{armorMatrialPeridot, armorMatrialRuby, armorMatrialSapphire}
   private val ruby = PartDefs.RUBY.makeStack
   private val sapphire = PartDefs.SAPPHIRE.makeStack
   private val peridot = PartDefs.PERIDOT.makeStack
@@ -476,9 +460,9 @@ class ItemLilySeeds
   override def getPlantType(w: IBlockAccess, x: Int, y: Int, z: Int) =
     EnumPlantType.Plains
 
-  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[_]) {
+  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[ItemStack]) {
     for (i <- 0 until 16)
-      list.asInstanceOf[JList[ItemStack]].add(new ItemStack(this, 1, i))
+      list.add(new ItemStack(this, 1, i))
   }
 
   override def getColorFromItemStack(item: ItemStack, meta: Int) = Colors(
@@ -493,8 +477,7 @@ class ItemLilySeeds
   }
 }
 
-import com.google.common.collect.HashMultimap
-import com.google.common.collect.Multimap
+import com.google.common.collect.{HashMultimap, Multimap}
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.ai.attributes.AttributeModifier
 import net.minecraft.entity.boss.EntityDragon

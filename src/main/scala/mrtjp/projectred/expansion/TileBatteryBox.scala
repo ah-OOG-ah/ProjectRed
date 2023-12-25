@@ -28,12 +28,10 @@ import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.client.IItemRenderer
 import net.minecraftforge.client.IItemRenderer.ItemRenderType._
-import net.minecraftforge.client.IItemRenderer.{
-  ItemRenderType,
-  ItemRendererHelper
-}
+import net.minecraftforge.client.IItemRenderer.{ItemRenderType, ItemRendererHelper}
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
-import scala.collection.mutable.ListBuffer
+import scala.tools.nsc.interpreter.JList
 
 trait TPowerStorage extends TileMachine with TPoweredMachine {
   var storage = 0
@@ -66,7 +64,7 @@ trait TPowerStorage extends TileMachine with TPoweredMachine {
   }
 
   def sendStorage() {
-    writeStream(5).writeInt(storage).sendToChunk()
+    streamToSend(writeStream(5).writeInt(storage)).sendToChunk()
   }
 
   def getStorageScaled(i: Int) = math.min(i, i * storage / getMaxStorage)
@@ -146,7 +144,7 @@ class TileBatteryBox
     dropInvContents(world, x, y, z)
   }
 
-  override def addHarvestContents(ist: ListBuffer[ItemStack]) {
+  override def addHarvestContents(ist: JList[ItemStack]): JList[ItemStack] = {
     val stack = new ItemStack(getBlock, 1, getMetaData)
     if (storage > 0) {
       val tag = new NBTTagCompound
@@ -154,7 +152,8 @@ class TileBatteryBox
       tag.setInteger("rstorage", getStorageScaled(8))
       stack.setTagCompound(tag)
     }
-    ist += stack
+    ist.add(stack)
+    ist
   }
 
   override def update() {
@@ -302,10 +301,10 @@ object RenderBatteryBox extends TCubeMapRender with IItemRenderer {
     val i =
       if (te != null) sides(te.getStorageScaled(8))
       else sides(0)
-    (0, 0, new MultiIconTransformation(bottom, top, i, i, i, i))
+    new ImmutableTriple(0, 0, new MultiIconTransformation(bottom, top, i, i, i, i))
   }
 
-  override def getInvData = (
+  override def getInvData = new ImmutableTriple(
     0,
     0,
     new MultiIconTransformation(
@@ -361,7 +360,7 @@ object RenderBatteryBox extends TCubeMapRender with IItemRenderer {
       CCRenderState.setDynamic()
       CCRenderState.pullLightmap()
       CCRenderState.startDrawing()
-      TCubeMapRender.models(0)(0).render(t, iconT)
+      TCubeMapRender.models.get(0).get(0).render(t, iconT)
       CCRenderState.draw()
     }
   }

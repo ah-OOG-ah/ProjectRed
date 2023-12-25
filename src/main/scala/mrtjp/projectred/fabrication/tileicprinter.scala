@@ -115,22 +115,22 @@ class TileICPrinter extends TileICMachine with TInventory {
     val out = writeStream(5)
     out.writeFloat(progress.toFloat)
     out.writeFloat(speed.toFloat)
-    out.sendToChunk()
+    streamToSend(out).sendToChunk()
   }
 
   def sendStopWorking() {
-    writeStream(4).sendToChunk()
+    streamToSend(writeStream(4)).sendToChunk()
   }
 
   def sendInputICStateUpdate() {
-    writeStream(6).writeByte(inputICState).sendToChunk()
+    streamToSend(writeStream(6).writeByte(inputICState)).sendToChunk()
   }
 
   def sendExternalItemMap(players: Iterable[EntityPlayer]) {
     val out = writeStream(7).writeInt(externalItems.size)
     for (item <- externalItems)
       out.writeItemStack(item.makeStack(0))
-    out.sendToChunk()
+    streamToSend(out).sendToChunk()
   }
 
   // 0 - 17 = ingredients

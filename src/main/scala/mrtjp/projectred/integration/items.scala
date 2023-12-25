@@ -58,8 +58,8 @@ class ItemPartGate
   }
 
   @SideOnly(Side.CLIENT)
-  override def getSubItems(id: Item, tab: CreativeTabs, list: JList[_]) {
-    val l2 = list.asInstanceOf[JList[ItemStack]]
+  override def getSubItems(id: Item, tab: CreativeTabs, list: JList[ItemStack]) {
+    val l2 = list
     for (g <- GateDefinition.values) if (g.implemented) l2.add(g.makeStack)
   }
 
@@ -73,10 +73,10 @@ class ItemPartGate
   override def addInformation(
       stack: ItemStack,
       player: EntityPlayer,
-      list: JList[_],
+      list: JList[String],
       flag: Boolean
   ) {
-    infoBuilderFunc(stack, list.asInstanceOf[JList[String]])
+    infoBuilderFunc(stack, list)
   }
 }
 

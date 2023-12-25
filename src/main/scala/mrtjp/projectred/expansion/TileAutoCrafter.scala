@@ -6,7 +6,6 @@
 package mrtjp.projectred.expansion
 
 import java.util.{List => JList}
-
 import codechicken.lib.data.MCDataInput
 import codechicken.lib.gui.GuiDraw
 import codechicken.lib.render.uv.{MultiIconTransformation, UVTransformation}
@@ -30,6 +29,7 @@ import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.oredict.{ShapedOreRecipe, ShapelessOreRecipe}
 import org.lwjgl.input.Keyboard
+import org.apache.commons.lang3.tuple.{ImmutableTriple, Triple}
 
 import scala.collection.JavaConversions._
 
@@ -381,8 +381,9 @@ object RenderAutoCrafter extends TCubeMapRender {
 
   var iconT: UVTransformation = _
 
-  override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = (0, 0, iconT)
-  override def getInvData = (0, 0, iconT)
+  override def getData(w: IBlockAccess, x: Int, y: Int, z: Int): Triple[Integer, Integer, UVTransformation] = new ImmutableTriple(0, 0, iconT)
+
+  override def getInvData = new ImmutableTriple(0, 0, iconT)
 
   override def getIcon(side: Int, meta: Int) = side match {
     case 0 => bottom

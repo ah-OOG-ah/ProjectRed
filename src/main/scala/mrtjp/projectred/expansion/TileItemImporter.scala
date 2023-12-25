@@ -6,7 +6,6 @@
 package mrtjp.projectred.expansion
 
 import java.util.{List => JList}
-
 import codechicken.lib.render.uv.{MultiIconTransformation, UVTransformation}
 import codechicken.lib.vec.{Cuboid6, Rotation, Vector3}
 import codechicken.multipart.IRedstoneConnector
@@ -23,6 +22,7 @@ import net.minecraft.entity.item.EntityItem
 import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.common.util.ForgeDirection
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 import scala.collection.JavaConversions._
 
@@ -152,11 +152,11 @@ object RenderItemImporter extends TInstancedBlockRender with TCubeMapRender {
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TActiveDevice])
     if (te != null)
-      (te.side, te.rotation, if (te.active || te.powered) iconT2 else iconT1)
-    else (0, 0, iconT1)
+      new ImmutableTriple(te.side, te.rotation, if (te.active || te.powered) iconT2 else iconT1)
+    else new ImmutableTriple(0, 0, iconT1)
   }
 
-  override def getInvData = (0, 0, iconT1)
+  override def getInvData = new ImmutableTriple(0, 0, iconT1)
 
   override def getIcon(s: Int, meta: Int) = s match {
     case 0 => bottom

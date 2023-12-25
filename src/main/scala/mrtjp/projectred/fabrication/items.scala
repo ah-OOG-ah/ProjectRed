@@ -63,11 +63,11 @@ class ItemICBlueprint
   override def addInformation(
       stack: ItemStack,
       player: EntityPlayer,
-      list: JList[_],
+      list: JList[String],
       par4: Boolean
   ) {
     import EnumChatFormatting._
-    val slist = list.asInstanceOf[JList[String]]
+    val slist = list
 
     if (ItemICBlueprint.hasICInside(stack)) {
       val size = ItemICBlueprint.getICSize(stack)
@@ -281,10 +281,10 @@ class ItemICChip extends ItemCore("projectred.fabrication.icchip") {
   override def addInformation(
       stack: ItemStack,
       player: EntityPlayer,
-      list: JList[_],
+      list: JList[String],
       par4: Boolean
   ) {
-    val jlist = list.asInstanceOf[JList[String]]
+    val jlist = list
     ItemICChip.addInfo(stack, jlist)
     if (stack.getItemDamage == 1) {
       jlist.add("Creative-mode only chip.")
@@ -307,8 +307,8 @@ class ItemICChip extends ItemCore("projectred.fabrication.icchip") {
     stack
   }
 
-  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[_]) {
-    val jlist = list.asInstanceOf[JList[ItemStack]]
+  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[ItemStack]) {
+    val jlist = list
     jlist.add(new ItemStack(this, 1, 0))
     jlist.add(new ItemStack(this, 1, 1))
   }

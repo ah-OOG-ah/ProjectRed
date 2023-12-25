@@ -104,7 +104,7 @@ trait TActiveDevice extends TileMachine {
   }
 
   def sendStateUpdate() {
-    writeStream(4).writeBoolean(powered).writeBoolean(active).sendToChunk()
+    streamToSend(writeStream(4).writeBoolean(powered).writeBoolean(active)).sendToChunk()
   }
 
   def shouldAcceptBacklog = true

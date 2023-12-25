@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 class TileChargingBench
     extends TileMachine
@@ -71,7 +72,7 @@ class TileChargingBench
   }
 
   def sendIsCharged() {
-    writeStream(5).writeBoolean(isCharged).sendToChunk()
+    streamToSend(writeStream(5).writeBoolean(isCharged)).sendToChunk()
   }
 
   override def size = 16
@@ -276,11 +277,11 @@ object RenderChargingBench extends TCubeMapRender {
 
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TileChargingBench])
-    if (te != null) (0, 0, if (te.isCharged) iconT2 else iconT1)
-    else (0, 0, iconT1)
+    if (te != null) new ImmutableTriple(0, 0, if (te.isCharged) iconT2 else iconT1)
+    else new ImmutableTriple(0, 0, iconT1)
   }
 
-  override def getInvData = (0, 0, iconT1)
+  override def getInvData = new ImmutableTriple(0, 0, iconT1)
 
   override def getIcon(side: Int, meta: Int) = side match {
     case 0 => bottom

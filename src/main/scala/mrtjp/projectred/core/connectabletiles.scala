@@ -209,7 +209,7 @@ trait TConnectableInstTile extends InstancedBlockTile with TTileConnectable {
   }
 
   def sendConnUpdate() =
-    if (clientNeedsMap) writeStream(31).writeLong(connMap).sendToChunk()
+    if (clientNeedsMap) streamToSend(writeStream(31).writeLong(connMap)).sendToChunk()
 
   abstract override def onMaskChanged() {
     super.onMaskChanged()

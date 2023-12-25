@@ -49,9 +49,9 @@ class ItemPart extends ItemCore("projectred.core.part") {
   setCreativeTab(ProjectRedCore.tabCore)
   setHasSubtypes(true)
 
-  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[_]) {
+  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[ItemStack]) {
     for (i <- PartDefs.values)
-      list.asInstanceOf[JList[ItemStack]].add(i.makeStack)
+      list.add(i.makeStack)
   }
 
   @SideOnly(Side.CLIENT)
@@ -276,10 +276,10 @@ class ItemDataCard extends ItemCore("projectred.core.datacard") {
   override def addInformation(
       stack: ItemStack,
       player: EntityPlayer,
-      list: JList[_],
+      list: JList[String],
       par4: Boolean
   ) {
-    val l2 = list.asInstanceOf[JList[String]]
+    val l2 = list
     if (
       (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(
         Keyboard.KEY_RSHIFT

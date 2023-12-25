@@ -1,8 +1,5 @@
 package mrtjp.projectred.exploration
 
-import java.util
-import java.util.Random
-
 import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.vec.{Cuboid6, Vector3}
 import cpw.mods.fml.common.registry.GameRegistry
@@ -24,7 +21,9 @@ import net.minecraft.util.IIcon
 import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.EnumPlantType
 
-import scala.collection.mutable.ListBuffer
+import java.util
+import java.util.Random
+import scala.tools.nsc.interpreter.JList
 
 class BlockOre extends BlockCore("projectred.exploration.ore", Material.rock) {
   setHardness(3.0f)
@@ -71,9 +70,9 @@ class BlockOre extends BlockCore("projectred.exploration.ore", Material.rock) {
     for (o <- OreDefs.values) o.registerIcon(reg)
   }
 
-  override def getSubBlocks(item: Item, tab: CreativeTabs, list: util.List[_]) {
+  override def getSubBlocks(item: Item, tab: CreativeTabs, list: util.List[ItemStack]) {
     for (o <- OreDefs.values)
-      list.asInstanceOf[util.List[ItemStack]].add(o.makeStack)
+      list.add(o.makeStack)
   }
 }
 
@@ -173,9 +172,9 @@ class BlockDecoratives
 
   override def damageDropped(meta: Int) = meta
 
-  override def getSubBlocks(item: Item, tab: CreativeTabs, list: util.List[_]) {
+  override def getSubBlocks(item: Item, tab: CreativeTabs, list: util.List[ItemStack]) {
     for (s <- DecorativeStoneDefs.values)
-      list.asInstanceOf[util.List[ItemStack]].add(s.makeStack)
+      list.add(s.makeStack)
   }
 }
 
@@ -232,13 +231,9 @@ class BlockDecorativeWalls extends BlockWall(Blocks.stone) {
     else super.getIcon(side, meta)
   }
 
-  override def getSubBlocks(item: Item, tab: CreativeTabs, list: util.List[_]) {
+  override def getSubBlocks(item: Item, tab: CreativeTabs, list: util.List[ItemStack]) {
     for (s <- DecorativeStoneDefs.values)
-      list
-        .asInstanceOf[util.List[ItemStack]]
-        .add(
-          new ItemStack(ProjectRedExploration.blockDecorativeWalls, 1, s.meta)
-        )
+      list.add(new ItemStack(ProjectRedExploration.blockDecorativeWalls, 1, s.meta))
   }
 
   override def canConnectWallTo(w: IBlockAccess, x: Int, y: Int, z: Int) = {
@@ -309,7 +304,7 @@ class TileLily extends InstancedBlockTile with TPlantTile {
   }
 
   def sendPhaseUpdate() {
-    writeStream(1).writeByte(phase).sendToChunk()
+    streamToSend(writeStream(1).writeByte(phase)).sendToChunk()
   }
 
   def setupPlanted(m: Int) {
@@ -332,7 +327,7 @@ class TileLily extends InstancedBlockTile with TPlantTile {
 
   override def getBlockBounds = TileLily.bounds(growth)
 
-  override def addHarvestContents(ist: ListBuffer[ItemStack]) {
+  override def addHarvestContents(ist: JList[ItemStack]): JList[ItemStack] = {
     if (growth == 7) {
       val count = MathLib.weightedRandom(
         Seq(
@@ -342,12 +337,16 @@ class TileLily extends InstancedBlockTile with TPlantTile {
           (3, 5)
         )
       )
-      if (count > 0)
-        ist += new ItemStack(ProjectRedExploration.itemLilySeed, count, meta)
+      if (count > 0) {
+        ist.add(new ItemStack(ProjectRedExploration.itemLilySeed, count, meta))
+      }
     } else {
-      if (world.rand.nextDouble() < growth / 7.0d)
-        ist += new ItemStack(ProjectRedExploration.itemLilySeed, 1, meta)
+      if (world.rand.nextDouble() < growth / 7.0d) {
+        ist.add(new ItemStack(ProjectRedExploration.itemLilySeed, 1, meta))
+      }
     }
+
+    ist
   }
 
   override def randomTick(rand: Random) {

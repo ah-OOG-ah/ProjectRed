@@ -2,7 +2,7 @@ package mrtjp.projectred.expansion
 
 import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.vec.{Rotation, Vector3}
-import mrtjp.core.block.{InstancedBlock, InstancedBlockTile, TTileOrient}
+import mrtjp.core.block.{InstancedBlock, TTileOrient}
 import mrtjp.core.gui.NodeContainer
 import mrtjp.core.inventory.TInventory
 import mrtjp.projectred.ProjectRedExpansion
@@ -33,7 +33,7 @@ class BlockMachine(name: String) extends InstancedBlock(name, Material.rock) {
   ) = true
 }
 
-abstract class TileMachine extends InstancedBlockTile with TTileOrient {
+abstract class TileMachine extends TTileOrient {
   override def onBlockPlaced(
       s: Int,
       meta: Int,
@@ -130,7 +130,7 @@ abstract class TileMachine extends InstancedBlockTile with TTileOrient {
   def doesOrient = false
 
   def sendOrientUpdate() {
-    writeStream(1).writeByte(orientation).sendToChunk()
+    streamToSend(writeStream(1).writeByte(orientation)).sendToChunk()
   }
 
   def onBlockRotated() {}
@@ -231,9 +231,9 @@ abstract class TileProcessingMachine
   }
 
   def sendWorkUpdate() {
-    writeStream(14)
+    streamToSend(writeStream(14)
       .writeBoolean(isCharged)
-      .writeBoolean(isWorking)
+      .writeBoolean(isWorking))
       .sendToChunk()
   }
 

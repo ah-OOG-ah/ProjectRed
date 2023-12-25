@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.client.ForgeHooksClient
+import org.apache.commons.lang3.tuple.ImmutableTriple
 import org.lwjgl.opengl.GL11._
 
 class BlockBarrel
@@ -91,11 +92,11 @@ class TileBarrel
 
   def sendItemUpdate() {
     if (isEmpty)
-      writeStream(1).sendToChunk()
+      streamToSend(writeStream(1)).sendToChunk()
     else
-      writeStream(2)
+      streamToSend(writeStream(2)
         .writeItemStack(item.makeStack(0))
-        .writeInt(getStoredAmount)
+        .writeInt(getStoredAmount))
         .sendToChunk()
   }
 
@@ -309,9 +310,9 @@ object RenderBarrel extends TileEntitySpecialRenderer with TCubeMapRender {
   var side: IIcon = null
   var iconT: UVTransformation = null
 
-  override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = (0, 0, iconT)
+  override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = new ImmutableTriple(0, 0, iconT)
 
-  override def getInvData = (0, 0, iconT)
+  override def getInvData = new ImmutableTriple(0, 0, iconT)
 
   override def getIcon(s: Int, meta: Int) = if (s == 0 || s == 1) top else side
 

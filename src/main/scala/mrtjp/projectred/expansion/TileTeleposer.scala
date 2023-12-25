@@ -6,7 +6,6 @@
 package mrtjp.projectred.expansion
 
 import java.util.{List => JList}
-
 import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.render.uv.{MultiIconTransformation, UVTransformation}
 import codechicken.lib.vec.{BlockCoord, Cuboid6, Vector3}
@@ -28,6 +27,7 @@ import net.minecraft.util.IIcon
 import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.IExtendedEntityProperties
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 import scala.collection.JavaConversions._
 
@@ -65,11 +65,11 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
   }
 
   def sendTransformFX() {
-    writeStream(2).sendToChunk()
+    streamToSend(writeStream(2)).sendToChunk()
   }
 
   def sendICUpdate() {
-    writeStream(3).writeBoolean(storage >= getTransportDraw).sendToChunk()
+    streamToSend(writeStream(3).writeBoolean(storage >= getTransportDraw)).sendToChunk()
   }
 
   override def getBlock = ProjectRedExpansion.machine2
@@ -438,11 +438,11 @@ object RenderTeleposer extends TCubeMapRender {
 
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TileTeleposer])
-    if (te != null) (0, 0, if (te.isCharged) iconT2 else iconT1)
-    else (0, 0, iconT1)
+    if (te != null) new ImmutableTriple(0, 0, if (te.isCharged) iconT2 else iconT1)
+    else new ImmutableTriple(0, 0, iconT1)
   }
 
-  override def getInvData = (0, 0, iconT1)
+  override def getInvData = new ImmutableTriple(0, 0, iconT1)
 
   override def getIcon(side: Int, meta: Int) = side match {
     case 0 => bottom

@@ -48,9 +48,9 @@ class ItemBaseLight(obj: LightObject, val inverted: Boolean)
   @SideOnly(Side.CLIENT)
   override def getSpriteNumber = 0
 
-  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[_]) {
+  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[ItemStack]) {
     for (i <- 0 until 16)
-      list.asInstanceOf[JList[ItemStack]].add(new ItemStack(this, 1, i))
+      list.add(new ItemStack(this, 1, i))
   }
 
   @SideOnly(Side.CLIENT)
@@ -87,9 +87,9 @@ abstract class ItemPartButtonCommons(name: String)
 
   def getNewInst(sMask: Int): LightButtonPart
 
-  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[_]) {
+  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[ItemStack]) {
     for (i <- 0 until 16)
-      list.asInstanceOf[JList[ItemStack]].add(new ItemStack(this, 1, i))
+      list.add(new ItemStack(this, 1, i))
   }
 
   @SideOnly(Side.CLIENT)

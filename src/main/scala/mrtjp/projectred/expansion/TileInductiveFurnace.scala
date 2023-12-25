@@ -19,6 +19,7 @@ import net.minecraft.inventory.Container
 import net.minecraft.item.ItemStack
 import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 class TileInductiveFurnace extends TileProcessingMachine {
   override def size = 2
@@ -159,17 +160,17 @@ object RenderInductiveFurnace extends TCubeMapRender {
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TileInductiveFurnace])
     if (te != null)
-      (
+      new ImmutableTriple(
         te.side,
         te.rotation,
         if (te.isWorking && te.isCharged) iconT3
         else if (te.isCharged) iconT2
         else iconT1
       )
-    else (0, 0, iconT1)
+    else new ImmutableTriple(0, 0, iconT1)
   }
 
-  override def getInvData = (0, 0, iconT1)
+  override def getInvData = new ImmutableTriple(0, 0, iconT1)
 
   override def getIcon(side: Int, meta: Int) = side match {
     case 0 => bottom

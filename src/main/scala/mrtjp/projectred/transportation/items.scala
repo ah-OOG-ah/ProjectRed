@@ -47,8 +47,8 @@ class ItemPartPipe
   }
 
   @SideOnly(Side.CLIENT)
-  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[_]) {
-    val l2 = list.asInstanceOf[JList[ItemStack]]
+  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[ItemStack]) {
+    val l2 = list
     for (t <- PipeDefs.values) l2.add(t.makeStack)
   }
 
@@ -113,8 +113,8 @@ class ItemRoutingChip
   setHasSubtypes(true)
   setCreativeTab(ProjectRedTransportation.tabTransportation)
 
-  override def getSubItems(i: Item, tab: CreativeTabs, list: JList[_]) {
-    val list2 = list.asInstanceOf[JList[ItemStack]]
+  override def getSubItems(i: Item, tab: CreativeTabs, list: JList[ItemStack]) {
+    val list2 = list
     for (c <- RoutingChipDefs.values) list2.add(c.makeStack)
   }
 
@@ -132,10 +132,10 @@ class ItemRoutingChip
   override def addInformation(
       stack: ItemStack,
       player: EntityPlayer,
-      list: JList[_],
+      list: JList[String],
       par4: Boolean
   ) {
-    val list2 = list.asInstanceOf[JList[String]]
+    val list2 = list
     if (
       Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(
         Keyboard.KEY_RSHIFT

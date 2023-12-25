@@ -5,8 +5,6 @@
  */
 package mrtjp.projectred.expansion
 
-import java.util.{List => JList}
-
 import codechicken.lib.packet.PacketCustom
 import codechicken.lib.vec.{BlockCoord, Rotation, Translation, Vector3}
 import cpw.mods.fml.common.FMLCommonHandler
@@ -22,11 +20,7 @@ import mrtjp.projectred.api.IScrewdriver
 import net.minecraft.client.Minecraft
 import net.minecraft.client.model.{ModelBiped, ModelRenderer}
 import net.minecraft.client.renderer.texture.IIconRegister
-import net.minecraft.enchantment.{
-  EnchantmentHelper,
-  Enchantment,
-  EnumEnchantmentType
-}
+import net.minecraft.enchantment.{Enchantment, EnchantmentHelper, EnumEnchantmentType}
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.{Entity, EntityLivingBase}
 import net.minecraft.init.Blocks
@@ -38,6 +32,7 @@ import net.minecraft.world.World
 import net.minecraftforge.common.ISpecialArmor
 import net.minecraftforge.common.ISpecialArmor.ArmorProperties
 
+import java.util.{List => JList}
 import scala.collection.mutable.{Set => MSet}
 
 trait TItemBattery extends IChargable {
@@ -196,13 +191,13 @@ class ItemPlan extends ItemCore("projectred.expansion.plan") {
   override def addInformation(
       stack: ItemStack,
       player: EntityPlayer,
-      list: JList[_],
+      list: JList[String],
       flag: Boolean
   ) {
     if (ItemPlan.hasRecipeInside(stack)) {
       val s =
         s"${EnumChatFormatting.BLUE}Output: ${EnumChatFormatting.GRAY + ItemPlan.loadPlanOutput(stack).getDisplayName}"
-      list.asInstanceOf[JList[String]].add(s)
+      list.add(s)
     }
   }
 }
@@ -476,12 +471,12 @@ class ItemInfusedEnderPearl
   override def addInformation(
       stack: ItemStack,
       player: EntityPlayer,
-      list: JList[_],
+      list: JList[String],
       flag: Boolean
   ) {
     import ItemInfusedEnderPearl._
     import net.minecraft.util.EnumChatFormatting._
-    val slist = list.asInstanceOf[JList[String]]
+    val slist = list
     if (hasLocation(stack)) {
       val bc = getLocation(stack)
       slist.add(GRAY + s"Tied to [${bc.x}, ${bc.y}, ${bc.z}]")

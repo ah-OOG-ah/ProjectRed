@@ -51,8 +51,8 @@ class ItemPartWire extends ItemWireCommon("projectred.transmission.wire") {
   }
 
   @SideOnly(Side.CLIENT)
-  override def getSubItems(i: Item, tab: CreativeTabs, list: JList[_]) {
-    val l2 = list.asInstanceOf[JList[ItemStack]]
+  override def getSubItems(i: Item, tab: CreativeTabs, list: JList[ItemStack]) {
+    val l2 = list
 
     for (w <- WireDef.values)
       if (w.hasWireForm) l2.add(w.makeStack)
@@ -83,8 +83,8 @@ class ItemPartFramedWire
   }
 
   @SideOnly(Side.CLIENT)
-  override def getSubItems(i: Item, tab: CreativeTabs, list: JList[_]) {
-    val l2 = list.asInstanceOf[JList[ItemStack]]
+  override def getSubItems(i: Item, tab: CreativeTabs, list: JList[ItemStack]) {
+    val l2 = list
 
     for (w <- WireDef.values)
       if (w.hasFramedForm) l2.add(w.makeFramedStack)

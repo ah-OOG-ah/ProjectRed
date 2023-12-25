@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.init.Blocks
 import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 class TileFireStarter
     extends TileMachine
@@ -67,7 +68,7 @@ object RenderFireStarter extends TInstancedBlockRender with TCubeMapRender {
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TActiveDevice])
     if (te != null)
-      (
+      new ImmutableTriple(
         te.side,
         te.rotation,
         if (te.active || te.powered)
@@ -90,7 +91,7 @@ object RenderFireStarter extends TInstancedBlockRender with TCubeMapRender {
           )
       )
     else
-      (
+      new ImmutableTriple(
         0,
         0,
         new MultiIconTransformation(
@@ -104,7 +105,7 @@ object RenderFireStarter extends TInstancedBlockRender with TCubeMapRender {
       )
   }
 
-  override def getInvData = (
+  override def getInvData = new ImmutableTriple(
     0,
     0,
     new MultiIconTransformation(bottom, topA, side1A, side1A, side2A, side2A)

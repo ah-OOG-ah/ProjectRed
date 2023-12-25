@@ -1,21 +1,17 @@
 package mrtjp.projectred.expansion
 
-import java.util.{List => JList}
-
 import codechicken.lib.render.uv.{MultiIconTransformation, UVTransformation}
-import codechicken.multipart.IRedstoneConnector
 import mrtjp.core.block.TInstancedBlockRender
-import mrtjp.core.item.ItemKey
 import mrtjp.core.render.TCubeMapRender
 import mrtjp.core.world.WorldLib
-import mrtjp.projectred.ProjectRedExpansion
 import net.minecraft.block.Block
 import net.minecraft.client.renderer.texture.IIconRegister
-import net.minecraft.entity.item.EntityItem
 import net.minecraft.init.Blocks
 import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
+import java.util.{List => JList}
 import scala.collection.JavaConversions._
 
 class TileDiamondBlockBreaker extends TileBlockBreaker {
@@ -58,11 +54,11 @@ object RenderDiamondBlockBreaker
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TActiveDevice])
     if (te != null)
-      (te.side, te.rotation, if (te.active || te.powered) iconT2 else iconT1)
-    else (0, 0, iconT1)
+      new ImmutableTriple(te.side, te.rotation, if (te.active || te.powered) iconT2 else iconT1)
+    else new ImmutableTriple(0, 0, iconT1)
   }
 
-  override def getInvData = (0, 0, iconT1)
+  override def getInvData = new ImmutableTriple(0, 0, iconT1)
 
   override def getIcon(s: Int, meta: Int) = s match {
     case 0 => bottom

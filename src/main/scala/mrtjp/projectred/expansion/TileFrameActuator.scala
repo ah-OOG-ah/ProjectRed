@@ -12,6 +12,7 @@ import mrtjp.projectred.ProjectRedExpansion
 import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.util.IIcon
 import net.minecraft.world.{IBlockAccess, World}
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 class TileFrameActuator extends TileMachine with TMotorTile {
   override def getBlock = ProjectRedExpansion.machine2
@@ -42,7 +43,7 @@ object RenderFrameActuator extends TCubeMapRender {
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TileFrameActuator])
     if (te != null)
-      (
+      new ImmutableTriple(
         te.side,
         te.rotation,
         if (te.isCharged && te.isMoving) iconT3
@@ -52,7 +53,7 @@ object RenderFrameActuator extends TCubeMapRender {
     else getInvData
   }
 
-  override def getInvData = (0, 0, iconT1)
+  override def getInvData = new ImmutableTriple(0, 0, iconT1)
 
   override def getIcon(s: Int, meta: Int) = s match {
     case 0 => bottom

@@ -9,12 +9,7 @@ import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.packet.PacketCustom
 import codechicken.lib.render.uv.MultiIconTransformation
 import codechicken.lib.vec.{Rotation, Vector3}
-import mrtjp.core.block.{
-  InstancedBlock,
-  InstancedBlockTile,
-  TInstancedBlockRender,
-  TTileOrient
-}
+import mrtjp.core.block.{InstancedBlock, TInstancedBlockRender, TTileOrient}
 import mrtjp.core.gui.NodeContainer
 import mrtjp.core.render.TCubeMapRender
 import mrtjp.core.world.WorldLib
@@ -29,6 +24,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 import scala.collection.mutable.{Set => MSet}
 
@@ -38,7 +34,7 @@ class BlockICMachine
   setCreativeTab(ProjectRedFabrication.tabFabrication)
 }
 
-abstract class TileICMachine extends InstancedBlockTile with TTileOrient {
+abstract class TileICMachine extends TTileOrient {
   override def getBlock = ProjectRedFabrication.icBlock
 
   override def onBlockPlaced(
@@ -96,7 +92,7 @@ abstract class TileICMachine extends InstancedBlockTile with TTileOrient {
   def doesRotate = true
 
   def sendOrientUpdate() {
-    writeStream(1).writeByte(orientation).sendToChunk()
+    streamToSend(writeStream(1).writeByte(orientation)).sendToChunk()
   }
 }
 
@@ -145,7 +141,7 @@ class TileICWorkbench extends TileICMachine with NetWorldCircuit {
   }
 
   private def sendHasBPUpdate() {
-    writeStream(1).writeBoolean(hasBP).sendToChunk()
+    streamToSend(writeStream(1).writeBoolean(hasBP)).sendToChunk()
   }
 
   private def sendICDesc() { sendICDesc(watchers.toSeq: _*) }
@@ -276,10 +272,10 @@ object RenderICWorkbench extends TInstancedBlockRender with TCubeMapRender {
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TileICWorkbench])
 
-    (0, 0, if (te.hasBP) iconTBP else iconT)
+    new ImmutableTriple(0, 0, if (te.hasBP) iconTBP else iconT)
   }
 
-  override def getInvData = (0, 0, iconTBP)
+  override def getInvData = new ImmutableTriple(0, 0, iconTBP)
 
   override def getIcon(s: Int, meta: Int) = iconTBP.icons(s)
 

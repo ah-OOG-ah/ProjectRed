@@ -6,7 +6,6 @@
 package mrtjp.projectred.expansion
 
 import java.util.{List => JList}
-
 import codechicken.lib.data.MCDataInput
 import codechicken.lib.gui.GuiDraw
 import codechicken.lib.render.uv.{MultiIconTransformation, UVTransformation}
@@ -24,18 +23,14 @@ import mrtjp.projectred.core.libmc.PRResources
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.{
-  ISidedInventory,
-  InventoryCraftResult,
-  InventoryCrafting,
-  SlotCrafting
-}
+import net.minecraft.inventory.{ISidedInventory, InventoryCraftResult, InventoryCrafting, SlotCrafting}
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.{CraftingManager, IRecipe}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.IIcon
 import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.oredict.{ShapedOreRecipe, ShapelessOreRecipe}
+import org.apache.commons.lang3.tuple.ImmutableTriple
 import org.lwjgl.input.Keyboard
 
 import scala.collection.JavaConversions._
@@ -510,8 +505,8 @@ object RenderProjectBench extends TCubeMapRender {
 
   var iconT: UVTransformation = _
 
-  override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = (0, 0, iconT)
-  override def getInvData = (0, 0, iconT)
+  override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = new ImmutableTriple(0, 0, iconT)
+  override def getInvData = new ImmutableTriple(0, 0, iconT)
 
   override def getIcon(side: Int, meta: Int) = side match {
     case 0 => bottom

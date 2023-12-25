@@ -12,17 +12,13 @@ import mrtjp.core.render.TCubeMapRender
 import mrtjp.core.world.WorldLib
 import mrtjp.mcframes.api.{IFrame, MCFramesAPI}
 import mrtjp.projectred.ProjectRedExpansion
-import mrtjp.relocation.api.{
-  BlockPos,
-  IMovementCallback,
-  IMovementDescriptor,
-  RelocationAPI
-}
+import mrtjp.relocation.api.{BlockPos, IMovementCallback, IMovementDescriptor, RelocationAPI}
 import net.minecraft.block.Block
 import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.IIcon
 import net.minecraft.world.{IBlockAccess, World}
+import org.apache.commons.lang3.tuple.ImmutableTriple
 
 trait TMotorTile
     extends TileMachine
@@ -68,7 +64,7 @@ trait TMotorTile
   }
 
   def sendStateUpdate() {
-    writeStream(2).writeBoolean(isCharged).writeBoolean(isMoving).sendToChunk()
+    streamToSend(writeStream(2).writeBoolean(isCharged).writeBoolean(isMoving)).sendToChunk()
   }
 
   override def setDescriptor(desc: IMovementDescriptor) { moveDesc = desc }
@@ -178,7 +174,7 @@ object RenderFrameMotor extends TCubeMapRender {
   override def getData(w: IBlockAccess, x: Int, y: Int, z: Int) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TileFrameMotor])
     if (te != null)
-      (
+      new ImmutableTriple(
         te.side,
         te.rotation,
         if (te.isCharged && te.isMoving) iconT3
@@ -188,7 +184,7 @@ object RenderFrameMotor extends TCubeMapRender {
     else getInvData
   }
 
-  override def getInvData = (0, 0, iconT1)
+  override def getInvData = new ImmutableTriple(0, 0, iconT1)
 
   override def getIcon(s: Int, meta: Int) = s match {
     case 0 => bottom

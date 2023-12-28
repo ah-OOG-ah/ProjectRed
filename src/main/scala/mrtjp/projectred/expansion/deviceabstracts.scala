@@ -124,7 +124,7 @@ trait TActiveDevice extends TileMachine {
   }
 
   override def onNeighborChange(b: Block) {
-    if (world.isBlockIndirectlyGettingPowered(x, y, z)) {
+    if (world.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) {
       if (powered) return
       powered = true
       markDirty()
@@ -184,7 +184,7 @@ trait TActiveDevice extends TileMachine {
   override def onBlockRemoval() {
     super.onBlockRemoval()
     while (!storage.isEmpty)
-      WorldLib.dropItem(world, x, y, z, storage.poll().payload.makeStack)
+      WorldLib.dropItem(world, xCoord, yCoord, zCoord, storage.poll().payload.makeStack)
   }
 }
 

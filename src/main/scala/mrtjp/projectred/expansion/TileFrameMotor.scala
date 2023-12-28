@@ -88,7 +88,7 @@ trait TMotorTile
     import scala.util.control.Breaks._
     breakable {
       for (s <- 0 until 6) {
-        if (RedstoneInteractions.getPowerTo(world, x, y, z, s, 0x1f) > 0) {
+        if (RedstoneInteractions.getPowerTo(world, xCoord, yCoord, zCoord, s, 0x1f) > 0) {
           isPowered = true
           break()
         }
@@ -100,10 +100,10 @@ trait TMotorTile
       if (!world.isAirBlock(pos.x, pos.y, pos.z)) {
         if (
           !RelocationAPI.instance.isMoving(world, pos.x, pos.y, pos.z) &&
-          !RelocationAPI.instance.isMoving(world, x, y, z)
+          !RelocationAPI.instance.isMoving(world, xCoord, yCoord, zCoord)
         ) {
           val blocks = MCFramesAPI.instance.getStickResolver
-            .getStructure(world, pos.x, pos.y, pos.z, new BlockPos(x, y, z))
+            .getStructure(world, pos.x, pos.y, pos.z, new BlockPos(xCoord, yCoord, zCoord))
 
           val r = RelocationAPI.instance.getRelocator
           r.push()

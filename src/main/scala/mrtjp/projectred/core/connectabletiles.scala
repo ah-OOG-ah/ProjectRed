@@ -234,7 +234,7 @@ trait TConnectableInstTile extends InstancedBlockTile with TTileConnectable {
 
   abstract override def onBlockRemoval() {
     super.onBlockRemoval()
-    WorldLib.bulkBlockUpdate(world, x, y, z, getBlock)
+    WorldLib.bulkBlockUpdate(world, xCoord, yCoord, zCoord, getBlock)
   }
 }
 

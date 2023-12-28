@@ -363,12 +363,12 @@ class TileLily extends InstancedBlockTile with TPlantTile {
   def tickPollination(rand: Random): Boolean = {
     if (growth == 7 || pollinated) return false
 
-    val delta = (WorldLib.getWindSpeed(world, x, y, z) * 10).toInt
+    val delta = (WorldLib.getWindSpeed(world, xCoord, yCoord, zCoord) * 10).toInt
     val dx = MathLib.randomFromIntRange(-delta to delta, rand)
     val dy = MathLib.randomFromIntRange(-delta to delta, rand)
     val dz = MathLib.randomFromIntRange(-delta to delta, rand)
 
-    world.getTileEntity(x + dx, y + dy, z + dz) match {
+    world.getTileEntity(xCoord + dx, yCoord + dy, zCoord + dz) match {
       case p: TileLily if p.growth == 7 =>
         val mix = Colors(meta).mcMix(Colors(p.meta))
         if (mix != null) {
@@ -409,8 +409,8 @@ class TileLily extends InstancedBlockTile with TPlantTile {
 
   def getPlantLight =
     math.max(
-      WorldLib.getSkyLightValue(world, x, y, z) / 15.0d * 0.99d,
-      WorldLib.getBlockLightValue(world, x, y, z) / 15.0d * 0.66d
+      WorldLib.getSkyLightValue(world, xCoord, yCoord, zCoord) / 15.0d * 0.99d,
+      WorldLib.getBlockLightValue(world, xCoord, yCoord, zCoord) / 15.0d * 0.66d
     )
 
   def getSoilSaturation: Double = {
@@ -418,12 +418,12 @@ class TileLily extends InstancedBlockTile with TPlantTile {
     for (dx <- -4 to 4)
       for (dy <- -1 to 1)
         for (dz <- -4 to 4)
-          if (world.getBlock(x + dx, y + dy, z + dz) == Blocks.water)
+          if (world.getBlock(xCoord + dx, yCoord + dy, zCoord + dz) == Blocks.water)
             sat += (1.0d - new Vector3(dx, 0, dz).mag / 5.66d) * 0.25d
 
     import net.minecraftforge.common.BiomeDictionary.Type._
     import net.minecraftforge.common.BiomeDictionary._
-    val tags = getTypesForBiome(world.getBiomeGenForCoords(x, z)).toSeq
+    val tags = getTypesForBiome(world.getBiomeGenForCoords(xCoord, zCoord)).toSeq
     val satMap = Map(
       SPARSE -> -0.02d,
       HOT -> -0.05d,

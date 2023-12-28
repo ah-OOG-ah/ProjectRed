@@ -109,7 +109,7 @@ class TileFilteredImporter
       GuiFilteredImporter.open(
         player,
         createContainer(player),
-        _.writeCoord(x, y, z)
+        _.writeCoord(xCoord, yCoord, zCoord)
       )
     true
   }
@@ -131,7 +131,7 @@ class TileFilteredImporter
 
   override def onBlockRemoval() {
     super.onBlockRemoval()
-    dropInvContents(world, x, y, z)
+    dropInvContents(world, xCoord, yCoord, zCoord)
   }
 }
 

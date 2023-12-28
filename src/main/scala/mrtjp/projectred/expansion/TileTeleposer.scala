@@ -136,7 +136,7 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
     ) {
       ei.setDead()
       val stack = new ItemStack(ProjectRedExpansion.itemInfusedEnderPearl)
-      ItemInfusedEnderPearl.setLocation(stack, x, y, z)
+      ItemInfusedEnderPearl.setLocation(stack, xCoord, yCoord, zCoord)
 
       val ent = new EntityItem(world, ei.posX, ei.posY, ei.posZ, stack)
       ent.delayBeforeCanPickup = 20
@@ -152,12 +152,12 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
     if (storage < getTransportDraw) return
 
     def dest = getDestination
-    if (dest != null && (dest.x != x || dest.y != y || dest.z != z)) {
+    if (dest != null && (dest.x != xCoord || dest.y != yCoord || dest.z != zCoord)) {
       val te = WorldLib.getTileEntity(world, dest, classOf[TileTeleposer])
       if (te != null && te.storage >= te.getTransportDraw) {
         val thatDest = te.getDestination
         if (
-          thatDest != null && thatDest.x == x && thatDest.y == y && thatDest.z == z
+          thatDest != null && thatDest.x == xCoord && thatDest.y == yCoord && thatDest.z == zCoord
         ) {
           val ep = getProminentEnderProjectile
           if (ep != null) {
@@ -202,7 +202,7 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
   }
 
   def getProminentEnderProjectile = {
-    val box = Cuboid6.full.copy.add(new Vector3(x, y + 1, z)).toAABB
+    val box = Cuboid6.full.copy.add(new Vector3(xCoord, yCoord + 1, zCoord)).toAABB
 
     world
       .getEntitiesWithinAABB(classOf[EntityEnderPearl], box)
@@ -215,7 +215,7 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
   }
 
   def getProjectilesToOrbit = {
-    val box = new Cuboid6(-3, 0, -3, 4, 4, 4).add(new Vector3(x, y, z)).toAABB
+    val box = new Cuboid6(-3, 0, -3, 4, 4, 4).add(new Vector3(xCoord, yCoord, zCoord)).toAABB
     world
       .getEntitiesWithinAABB(classOf[EntityEnderPearl], box)
       .asInstanceOf[JList[EntityEnderPearl]]
@@ -224,7 +224,7 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
 
   def getAllItemEntities = {
     Cuboid6.full = new Cuboid6(0, 0, 0, 1, 1, 1)
-    val box = Cuboid6.full.copy.add(new Vector3(x, y + 1, z)).toAABB
+    val box = Cuboid6.full.copy.add(new Vector3(xCoord, yCoord + 1, zCoord)).toAABB
     world
       .getEntitiesWithinAABB(classOf[EntityItem], box)
       .asInstanceOf[JList[EntityItem]]
@@ -236,7 +236,7 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
   }
 
   def makeEntityOrbit(e: EntityEnderPearl) {
-    val target = Vector3.center.copy.add(x, y + 1, z)
+    val target = Vector3.center.copy.add(xCoord, yCoord + 1, zCoord)
     val rpos = new Vector3(e.posX, e.posY, e.posZ).subtract(target)
     val targetDistance =
       math.max(0.35, math.sqrt(rpos.x * rpos.x + rpos.z * rpos.z) * 0.97)
@@ -260,7 +260,7 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
   }
 
   def makeEntityHeld(e: EntityItem) {
-    val target = Vector3.center.copy.add(x, y + 1, z)
+    val target = Vector3.center.copy.add(xCoord, yCoord + 1, zCoord)
     val rpos = new Vector3(e.posX, e.posY, e.posZ).subtract(target)
     val targetPos = rpos.multiply(0.80).add(target)
 
@@ -283,7 +283,7 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
     while (beams2.length < elist.size) beams2 :+= null
     beams = beams2
 
-    val source = Vector3.center.copy.add(x, y + 1, z)
+    val source = Vector3.center.copy.add(xCoord, yCoord + 1, zCoord)
 
     for (i <- elist.indices) {
       var beam = beams2(i)
@@ -318,7 +318,7 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
     ) {
       val p = new SpriteParticle(world)
       p.setPos(
-        new Vector3(x + 0.5, y + 1.0, z + 0.5)
+        new Vector3(xCoord + 0.5, yCoord + 1.0, zCoord + 0.5)
           .add(new Vector3(1, 1, 1).multiply(world.rand.nextDouble()))
       )
       p.isImmortal = true
@@ -329,14 +329,14 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
 
       import ParticleAction._
       val a = group(
-        repeatForever(orbitAround(x + 0.5, z + 0.5, 0.30, 1)),
+        repeatForever(orbitAround(xCoord + 0.5, zCoord + 0.5, 0.30, 1)),
         sequence(
           group(
             changeAlphaTo(1, 5),
             scaleTo(0.075, 0.075, 0.075, 20)
           ),
           group(
-            moveTo(x + 0.5, y + 1, z + 0.5, 80),
+            moveTo(xCoord + 0.5, yCoord + 1, zCoord + 0.5, 80),
             sequence(
               delay(45),
               group(
@@ -356,7 +356,7 @@ class TileTeleposer extends TileMachine with TPoweredMachine {
   @SideOnly(Side.CLIENT)
   def doTransformFX() {
     for (i <- 0 until 16) {
-      val start = new Vector3(x, y + 1, z).add(Vector3.center)
+      val start = new Vector3(xCoord, yCoord + 1, zCoord).add(Vector3.center)
       val p = new SpriteParticle(world)
       FXEngine.addEffect(p)
       p.setPos(start)

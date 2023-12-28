@@ -164,11 +164,11 @@ class TileProjectBench
 
   override def onBlockRemoval() {
     super.onBlockRemoval()
-    dropInvContents(world, x, y, z)
+    dropInvContents(world, xCoord, yCoord, zCoord)
   }
 
   override def openGui(player: EntityPlayer) {
-    GuiProjectBench.open(player, createContainer(player), _.writeCoord(x, y, z))
+    GuiProjectBench.open(player, createContainer(player), _.writeCoord(xCoord, yCoord, zCoord))
   }
 
   override def createContainer(player: EntityPlayer) =

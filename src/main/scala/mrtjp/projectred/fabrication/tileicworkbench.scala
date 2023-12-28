@@ -228,7 +228,7 @@ class TileICWorkbench extends TileICMachine with NetWorldCircuit {
           player,
           nc,
           { p =>
-            p.writeCoord(x, y, z)
+            p.writeCoord(xCoord, yCoord, zCoord)
             circuit.writeDesc(p)
           }
         )
@@ -242,7 +242,7 @@ class TileICWorkbench extends TileICMachine with NetWorldCircuit {
     if (hasBP) {
       val stack = new ItemStack(ProjectRedFabrication.itemICBlueprint)
       if (circuit.nonEmpty) saveIC(circuit, stack)
-      WorldLib.dropItem(world, x, y, z, stack)
+      WorldLib.dropItem(world, xCoord, yCoord, zCoord, stack)
     }
   }
 

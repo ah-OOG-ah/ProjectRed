@@ -50,8 +50,8 @@ abstract class TileMachine extends TTileOrient {
 
   def calcFacing(ent: EntityPlayer): Int = {
     val yawrx = Math.floor(ent.rotationYaw * 4.0f / 360.0f + 0.5d).toInt & 0x3
-    if ((Math.abs(ent.posX - x) < 2.0d) && (Math.abs(ent.posZ - z) < 2.0d)) {
-      val p = ent.posY + 1.82d - ent.yOffset - y
+    if ((Math.abs(ent.posX - xCoord) < 2.0d) && (Math.abs(ent.posZ - zCoord) < 2.0d)) {
+      val p = ent.posY + 1.82d - ent.yOffset - yCoord
       if (p > 2.0d) return 0
       if (p < 0.0d) return 1
     }
@@ -102,7 +102,7 @@ abstract class TileMachine extends TTileOrient {
           (rotation + 1) % 4
         ) while (old != rotation && !isRotationAllowed(rotation))
         if (old != rotation) sendOrientUpdate()
-        world.notifyBlocksOfNeighborChange(x, y, z, getBlock)
+        world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlock)
         onBlockRotated()
         held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
       }
@@ -110,7 +110,7 @@ abstract class TileMachine extends TTileOrient {
         val old = side
         do setSide((side + 1) % 6) while (old != side && !isSideAllowed(side))
         if (old != side) sendOrientUpdate()
-        world.notifyBlocksOfNeighborChange(x, y, z, getBlock)
+        world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlock)
         onBlockRotated()
         held.getItem.asInstanceOf[IScrewdriver].damageScrewdriver(player, held)
       }
@@ -279,7 +279,7 @@ abstract class TileProcessingMachine
 
   override def onBlockRemoval() {
     super.onBlockRemoval()
-    dropInvContents(world, x, y, z)
+    dropInvContents(world, xCoord, yCoord, zCoord)
   }
 
   def progressScaled(scale: Int): Int = {

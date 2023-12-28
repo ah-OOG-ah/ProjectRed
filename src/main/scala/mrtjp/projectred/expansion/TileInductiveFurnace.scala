@@ -31,7 +31,7 @@ class TileInductiveFurnace extends TileProcessingMachine {
     GuiInductiveFurnace.open(
       player,
       createContainer(player),
-      _.writeCoord(x, y, z)
+      _.writeCoord(xCoord, yCoord, zCoord)
     )
   }
 

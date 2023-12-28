@@ -141,7 +141,7 @@ class TileBatteryBox
 
   override def onBlockRemoval() {
     super.onBlockRemoval()
-    dropInvContents(world, x, y, z)
+    dropInvContents(world, xCoord, yCoord, zCoord)
   }
 
   override def addHarvestContents(ist: JList[ItemStack]): JList[ItemStack] = {
@@ -203,7 +203,7 @@ class TileBatteryBox
   }
 
   override def openGui(player: EntityPlayer) {
-    GuiBatteryBox.open(player, createContainer(player), _.writeCoord(x, y, z))
+    GuiBatteryBox.open(player, createContainer(player), _.writeCoord(xCoord, yCoord, zCoord))
   }
 
   override def createContainer(player: EntityPlayer) =

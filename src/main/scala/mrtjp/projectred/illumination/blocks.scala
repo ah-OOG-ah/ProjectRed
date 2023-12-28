@@ -135,8 +135,8 @@ class TileLamp extends InstancedBlockTile with ILight {
   }
 
   def checkPower = {
-    world.isBlockIndirectlyGettingPowered(x, y, z) ||
-    world.getBlockPowerInput(x, y, z) != 0
+    world.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord) ||
+    world.getBlockPowerInput(xCoord, yCoord, zCoord) != 0
   }
 
   override def onScheduledTick() {

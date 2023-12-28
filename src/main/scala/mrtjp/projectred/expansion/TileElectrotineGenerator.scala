@@ -85,7 +85,7 @@ class TileElectrotineGenerator
     GuiElectrotineGenerator.open(
       player,
       createContainer(player),
-      _.writeCoord(x, y, z)
+      _.writeCoord(xCoord, yCoord, zCoord)
     )
 
   override def createContainer(player: EntityPlayer) =
@@ -166,7 +166,7 @@ class TileElectrotineGenerator
 
   override def onBlockRemoval() {
     super.onBlockRemoval()
-    dropInvContents(world, x, y, z)
+    dropInvContents(world, xCoord, yCoord, zCoord)
   }
 }
 

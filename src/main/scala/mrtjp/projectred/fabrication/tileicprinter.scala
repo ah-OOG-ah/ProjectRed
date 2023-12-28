@@ -318,7 +318,7 @@ class TileICPrinter extends TileICMachine with TInventory {
   override def onBlockActivated(player: EntityPlayer, side: Int): Boolean = {
     if (super.onBlockActivated(player, side)) return true
     if (!world.isRemote)
-      GuiICPrinter.open(player, createContainer(player), _.writeCoord(x, y, z))
+      GuiICPrinter.open(player, createContainer(player), _.writeCoord(xCoord, yCoord, zCoord))
     true
   }
 
@@ -334,7 +334,7 @@ class TileICPrinter extends TileICMachine with TInventory {
 
   override def onBlockRemoval() {
     super.onBlockRemoval()
-    dropInvContents(world, x, y, z)
+    dropInvContents(world, xCoord, yCoord, zCoord)
   }
 
   // Client-side render things

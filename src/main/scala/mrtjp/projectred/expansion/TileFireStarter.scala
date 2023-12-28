@@ -28,7 +28,7 @@ class TileFireStarter
   override def doesOrient = true
 
   override def onActivate() {
-    val pos = new BlockCoord(x, y, z).offset(side ^ 1)
+    val pos = new BlockCoord(xCoord, yCoord, zCoord).offset(side ^ 1)
     if (world.isAirBlock(pos.x, pos.y, pos.z)) {
       world.setBlock(pos.x, pos.y, pos.z, Blocks.fire, 0, 3)
       world.playSoundEffect(
@@ -43,7 +43,7 @@ class TileFireStarter
   }
 
   override def onDeactivate() {
-    val pos = new BlockCoord(x, y, z).offset(side ^ 1)
+    val pos = new BlockCoord(xCoord, yCoord, zCoord).offset(side ^ 1)
     val b = world.getBlock(pos.x, pos.y, pos.z)
     if (b == Blocks.fire || b == Blocks.portal)
       world.setBlockToAir(pos.x, pos.y, pos.z)

@@ -88,7 +88,7 @@ class TileItemImporter
     val elist = world
       .getEntitiesWithinAABB(
         classOf[EntityItem],
-        box.copy.add(new Vector3(x, y, z)).toAABB
+        box.copy.add(new Vector3(xCoord, yCoord, zCoord)).toAABB
       )
       .asInstanceOf[JList[EntityItem]]
     var added = false

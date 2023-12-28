@@ -28,9 +28,9 @@ class TileDiamondBlockBreaker extends TileBlockBreaker {
     world.playAuxSFXAtEntity(
       null,
       2001,
-      x,
-      y,
-      z,
+      xCoord,
+      yCoord,
+      zCoord,
       Block.getIdFromBlock(b) + (meta << 12)
     )
     world.setBlockToAir(bc.x, bc.y, bc.z)

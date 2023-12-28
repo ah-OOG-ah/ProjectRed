@@ -73,7 +73,7 @@ class TileBlockPlacer
         )
       )
 
-    val pos = new Vector3(x, y, z).add(positions(side))
+    val pos = new Vector3(xCoord, yCoord, zCoord).add(positions(side))
 
     val (pitch, yaw) = angles(side)
     fakePlayer.setLocationAndAngles(pos.x, pos.y, pos.z, yaw, pitch)
@@ -81,7 +81,7 @@ class TileBlockPlacer
 
   override def onBlockRemoval() {
     super.onBlockRemoval()
-    dropInvContents(world, x, y, z)
+    dropInvContents(world, xCoord, yCoord, zCoord)
   }
 
   override def onBlockActivated(player: EntityPlayer, actside: Int): Boolean = {
@@ -91,7 +91,7 @@ class TileBlockPlacer
       GuiBlockPlacer.open(
         player,
         createContainer(player),
-        _.writeCoord(x, y, z)
+        _.writeCoord(xCoord, yCoord, zCoord)
       )
     true
   }

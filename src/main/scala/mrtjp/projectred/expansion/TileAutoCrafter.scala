@@ -228,11 +228,11 @@ class TileAutoCrafter
 
   override def onBlockRemoval() {
     super.onBlockRemoval()
-    dropInvContents(world, x, y, z)
+    dropInvContents(world, xCoord, yCoord, zCoord)
   }
 
   override def openGui(player: EntityPlayer) {
-    GuiAutoCrafter.open(player, createContainer(player), _.writeCoord(x, y, z))
+    GuiAutoCrafter.open(player, createContainer(player), _.writeCoord(xCoord, yCoord, zCoord))
   }
 
   override def createContainer(player: EntityPlayer) =

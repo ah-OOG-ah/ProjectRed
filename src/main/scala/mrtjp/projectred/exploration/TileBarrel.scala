@@ -174,7 +174,7 @@ class TileBarrel
 
     setInventorySlotContents(1, if (inslot.stackSize <= 0) null else inslot)
 
-    PRLib.dropTowardsPlayer(world, x, y, z, out, player)
+    PRLib.dropTowardsPlayer(world, xCoord, yCoord, zCoord, out, player)
     needsUpdate = true
     true
   }
@@ -185,7 +185,7 @@ class TileBarrel
     if (!world.isRemote) {
       var stack = getStackInSlot(1)
       while (stack != null && nonEmpty) {
-        WorldLib.dropItem(world, x, y, z, stack)
+        WorldLib.dropItem(world, xCoord, yCoord, zCoord, stack)
         setInventorySlotContents(1, null)
         stack = getStackInSlot(1)
       }

@@ -4,20 +4,10 @@ import codechicken.lib.lighting.LightModel
 import codechicken.lib.raytracer.ExtendedMOP
 import codechicken.lib.render.CCRenderState.IVertexOperation
 import codechicken.lib.render._
-import codechicken.lib.render.uv.{
-  IconTransformation,
-  UV,
-  UVScale,
-  UVTransformation
-}
+import codechicken.lib.render.uv.{IconTransformation, UV, UVScale, UVTransformation}
 import codechicken.lib.vec._
 import codechicken.microblock.MicroMaterialRegistry.IMicroHighlightRenderer
-import codechicken.microblock.{
-  CommonMicroClass,
-  BlockMicroMaterial,
-  MicroMaterialRegistry,
-  MicroblockClass
-}
+import codechicken.microblock.{BlockMicroMaterial, CommonMicroClass, MicroMaterialRegistry}
 import mrtjp.core.color.Colors
 import mrtjp.projectred.core.libmc.PRLib
 import net.minecraft.client.renderer.entity.{RenderItem, RenderManager}
@@ -27,10 +17,7 @@ import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.util.{IIcon, MovingObjectPosition}
 import net.minecraftforge.client.IItemRenderer
-import net.minecraftforge.client.IItemRenderer.{
-  ItemRenderType,
-  ItemRendererHelper
-}
+import net.minecraftforge.client.IItemRenderer.{ItemRenderType, ItemRendererHelper}
 import org.lwjgl.opengl.GL11
 
 object RenderPipe {
@@ -133,7 +120,7 @@ object RenderPipe {
   }
 
   def renderBreakingOverlay(icon: IIcon, pipe: SubcorePipePart) {
-    CCRenderState.setPipeline(
+    CCRenderState.instance.setPipeline(
       new Translation(pipe.x, pipe.y, pipe.z),
       new IconTransformation(icon)
     )
@@ -220,9 +207,10 @@ object RenderPipe {
 
     val t = new Vector3(x, y, z).add(-4 / 16d, 0, -4 / 16d)
 
-    CCRenderState.setPipeline(new Translation(t))
-    CCRenderState.alphaOverride = 32
-    CCRenderState.baseColour = Colors(colour).rgba
+    val ccrsi = CCRenderState.instance
+    ccrsi.setPipeline(new Translation(t))
+    ccrsi.alphaOverride = 32
+    ccrsi.baseColour = Colors(colour).rgba
     BlockRenderer.renderCuboid(
       new Cuboid6(1 / 16d, 1 / 16d, 1 / 16d, 7 / 16d, 7 / 16d, 7 / 16d),
       0
@@ -239,13 +227,14 @@ object RenderPipe {
     GL11.glDisable(GL11.GL_LIGHTING)
     GL11.glDisable(GL11.GL_CULL_FACE)
     GL11.glDepthMask(false)
-    CCRenderState.startDrawing()
-    CCRenderState.pullLightmap()
-    CCRenderState.setDynamic()
+    val ccrsi = CCRenderState.instance
+    ccrsi.startDrawing()
+    ccrsi.pullLightmap()
+    ccrsi.setDynamic()
   }
 
   private def restoreRenderState() {
-    CCRenderState.draw()
+    CCRenderState.instance.draw()
     GL11.glDepthMask(true)
     GL11.glColor3f(1, 1, 1)
     GL11.glEnable(GL11.GL_CULL_FACE)
@@ -264,16 +253,17 @@ object RenderPipe {
     GL11.glEnable(GL11.GL_BLEND)
     GL11.glDepthMask(false)
     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-    CCRenderState.reset()
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
     TextureUtils.bindAtlas(0)
-    CCRenderState.setDynamic()
-    CCRenderState.setBrightness(part.world, pos.x, pos.y, pos.z)
-    CCRenderState.alphaOverride = 127
-    CCRenderState.startDrawing()
+    ccrsi.setDynamic()
+    ccrsi.setBrightness(part.world, pos.x, pos.y, pos.z)
+    ccrsi.alphaOverride = 127
+    ccrsi.startDrawing()
 
     tFunc()
 
-    CCRenderState.draw()
+    ccrsi.draw()
     GL11.glDisable(GL11.GL_BLEND)
     GL11.glDepthMask(true)
     GL11.glPopMatrix()
@@ -528,16 +518,17 @@ object PipeItemRenderer extends IItemRenderer {
     val pdef = PipeDefs.values(meta)
     if (pdef == null) return
     TextureUtils.bindAtlas(0)
-    CCRenderState.reset()
-    CCRenderState.setDynamic()
-    CCRenderState.pullLightmap()
-    CCRenderState.startDrawing()
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
+    ccrsi.setDynamic()
+    ccrsi.pullLightmap()
+    ccrsi.startDrawing()
 
     RenderPipe.renderInv(
       new Scale(scale).`with`(new Translation(x, y, z)),
       new IconTransformation(pdef.sprites(0))
     )
 
-    CCRenderState.draw()
+    ccrsi.draw()
   }
 }

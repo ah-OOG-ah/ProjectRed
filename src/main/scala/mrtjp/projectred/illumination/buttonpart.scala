@@ -1,23 +1,22 @@
 package mrtjp.projectred.illumination
 
+import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.render.uv.IconTransformation
-import codechicken.lib.render.{ColourMultiplier, BlockRenderer, CCRenderState}
-import codechicken.multipart.minecraft.{PartMetaAccess, ButtonPart}
+import codechicken.lib.render.{BlockRenderer, CCRenderState, ColourMultiplier}
+import codechicken.lib.vec.{BlockCoord, Translation, Vector3}
+import codechicken.multipart.TileMultipart
+import codechicken.multipart.minecraft.ButtonPart
+import cpw.mods.fml.relauncher.{Side, SideOnly}
 import mrtjp.core.color.Colors
+import mrtjp.projectred.ProjectRedIllumination
 import mrtjp.projectred.core.{RenderHalo, TSwitchPacket}
-import net.minecraft.entity.projectile.EntityArrow
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.init.Blocks
 import net.minecraft.item.{Item, ItemStack}
-import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.util.{IIcon, MovingObjectPosition}
-import codechicken.lib.data.{MCDataOutput, MCDataInput}
 import net.minecraft.nbt.NBTTagCompound
-import mrtjp.projectred.ProjectRedIllumination
+import net.minecraft.util.{IIcon, MovingObjectPosition}
+
 import scala.collection.JavaConversions._
-import codechicken.multipart.{RedstoneInteractions, TileMultipart}
-import codechicken.lib.vec.{Translation, BlockCoord, Vector3}
-import cpw.mods.fml.relauncher.{SideOnly, Side}
-import net.minecraft.client.renderer.RenderBlocks
 
 class LightButtonPart(m: Int)
     extends ButtonPart(m)
@@ -109,12 +108,13 @@ class LightButtonPart(m: Int)
   @SideOnly(Side.CLIENT)
   override def renderStatic(pos: Vector3, pass: Int) = {
     if (pass == 0) {
-      CCRenderState.setBrightness(world, x, y, z)
-      CCRenderState.setPipeline(
+      val ccrsi = CCRenderState.instance
+      ccrsi.setBrightness(world, x, y, z)
+      ccrsi.setPipeline(
         new Translation(x, y, z),
         new IconTransformation(ItemPartButton.icon),
         new ColourMultiplier(Colors(colorMeta).rgba),
-        CCRenderState.lightMatrix
+        ccrsi.lightMatrix
       )
       BlockRenderer.renderCuboid(getBounds, 0)
       true

@@ -3,21 +3,14 @@ package mrtjp.projectred.illumination
 import codechicken.lib.render._
 import codechicken.lib.render.uv.IconTransformation
 import codechicken.lib.vec._
-import cpw.mods.fml.common.eventhandler.SubscribeEvent
-import mrtjp.core.color.{Colors, Colors_old}
-import mrtjp.projectred.core.{RenderHalo, Configurator}
-import net.minecraft.client.Minecraft
+import mrtjp.core.color.Colors
+import mrtjp.projectred.core.RenderHalo
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.world.World
 import net.minecraftforge.client.IItemRenderer
-import net.minecraftforge.client.IItemRenderer.{
-  ItemRenderType,
-  ItemRendererHelper
-}
-import net.minecraftforge.client.event.RenderWorldLastEvent
+import net.minecraftforge.client.IItemRenderer.{ItemRenderType, ItemRendererHelper}
 import org.lwjgl.opengl.GL11
 
 object LampTESR extends TileEntitySpecialRenderer with IItemRenderer {
@@ -48,15 +41,16 @@ object LampTESR extends TileEntitySpecialRenderer with IItemRenderer {
       GL11.glTranslated(x, y, z)
       GL11.glScaled(s, s, s)
       TextureUtils.bindAtlas(0)
-      CCRenderState.reset()
-      CCRenderState.setDynamic()
-      CCRenderState.pullLightmap()
-      CCRenderState.startDrawing()
+      val ccrsi = CCRenderState.instance
+      ccrsi.reset()
+      ccrsi.setDynamic()
+      ccrsi.pullLightmap()
+      ccrsi.startDrawing()
 
       val t = new Translation(x, y, z)
-      CCRenderState.setPipeline(t, icon)
+      ccrsi.setPipeline(t, icon)
       BlockRenderer.renderCuboid(Cuboid6.full, 0)
-      CCRenderState.draw()
+      ccrsi.draw()
 
       if (meta > 15) {
         RenderHalo.prepareRenderState()
@@ -117,12 +111,13 @@ trait ButtonRenderCommons extends IItemRenderer {
         GL11.glPushMatrix()
 
         TextureUtils.bindAtlas(0)
-        CCRenderState.reset()
-        CCRenderState.setDynamic()
-        CCRenderState.pullLightmap()
-        CCRenderState.startDrawing()
+        val ccrsi = CCRenderState.instance
+        ccrsi.reset()
+        ccrsi.setDynamic()
+        ccrsi.pullLightmap()
+        ccrsi.startDrawing()
 
-        CCRenderState.setPipeline(
+        ccrsi.setPipeline(
           t,
           icon,
           new ColourMultiplier(Colors(color).rgba)
@@ -130,7 +125,7 @@ trait ButtonRenderCommons extends IItemRenderer {
         BlockRenderer.renderCuboid(invRenderBox, 0)
         drawExtras(t)
 
-        CCRenderState.draw()
+        ccrsi.draw()
         RenderHalo.prepareRenderState()
         RenderHalo.renderHalo(invLightBox, color, t)
         RenderHalo.restoreRenderState()

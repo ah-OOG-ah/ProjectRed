@@ -2,24 +2,20 @@ package mrtjp.projectred.exploration
 
 import codechicken.lib.lighting.LightModel
 import codechicken.lib.math.MathHelper
-import codechicken.lib.render.uv.{IconTransformation, UVTranslation}
 import codechicken.lib.render._
+import codechicken.lib.render.uv.{IconTransformation, UVTranslation}
 import codechicken.lib.vec._
 import mrtjp.core.block.TInstancedBlockRender
 import mrtjp.core.color.Colors
 import mrtjp.core.world.WorldLib
 import net.minecraft.client.renderer.RenderBlocks
 import net.minecraft.client.renderer.texture.IIconRegister
-import net.minecraft.init.Blocks
 import net.minecraft.item.Item.ToolMaterial
 import net.minecraft.item.ItemStack
 import net.minecraft.util.{IIcon, ResourceLocation}
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.client.IItemRenderer
-import net.minecraftforge.client.IItemRenderer.{
-  ItemRenderType,
-  ItemRendererHelper
-}
+import net.minecraftforge.client.IItemRenderer.{ItemRenderType, ItemRendererHelper}
 import org.lwjgl.opengl.GL11
 
 import scala.collection.JavaConversions._
@@ -43,11 +39,7 @@ object GemSawRenderer extends IItemRenderer {
   ) = true
 
   import mrtjp.core.color.Colors_old._
-  import mrtjp.projectred.ProjectRedExploration.{
-    toolMaterialPeridot,
-    toolMaterialRuby,
-    toolMaterialSapphire
-  }
+  import mrtjp.projectred.ProjectRedExploration.{toolMaterialPeridot, toolMaterialRuby, toolMaterialSapphire}
   private def colour(stack: ItemStack) =
     stack.getItem.asInstanceOf[ItemGemSaw].toolDef.mat match {
       case ToolMaterial.WOOD              => BROWN.rgba
@@ -99,26 +91,27 @@ object GemSawRenderer extends IItemRenderer {
       case _ => return
     }
 
-    CCRenderState.reset()
-    CCRenderState.setDynamic()
-    CCRenderState.pullLightmap()
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
+    ccrsi.setDynamic()
+    ccrsi.pullLightmap()
     CCRenderState.changeTexture("microblock:textures/items/saw.png")
-    CCRenderState.baseColour = 0xffffffff
+    ccrsi.baseColour = 0xffffffff
 
-    CCRenderState.startDrawing()
+    ccrsi.startDrawing()
     handle.render(t)
     holder.render(t)
-    CCRenderState.draw()
+    ccrsi.draw()
 
     if (rtype != ItemRenderType.EQUIPPED_FIRST_PERSON)
       GL11.glDisable(GL11.GL_LIGHTING)
     GL11.glDisable(GL11.GL_CULL_FACE)
 
-    CCRenderState.startDrawing()
-    CCRenderState.baseColour = colour(item)
+    ccrsi.startDrawing()
+    ccrsi.baseColour = colour(item)
     blade.render(t, new UVTranslation(0, 4 / 64d))
-    CCRenderState.baseColour = 0xffffffff
-    CCRenderState.draw()
+    ccrsi.baseColour = 0xffffffff
+    ccrsi.draw()
 
     GL11.glEnable(GL11.GL_CULL_FACE)
     if (rtype != EQUIPPED_FIRST_PERSON) GL11.glEnable(GL11.GL_LIGHTING)
@@ -150,9 +143,10 @@ object RenderLily extends TInstancedBlockRender {
   ) = {
     val te = WorldLib.getTileEntity(w, x, y, z, classOf[TileLily])
     if (te != null) {
-      CCRenderState.reset()
-      CCRenderState.lightMatrix.locate(w, x, y, z)
-      CCRenderState.setBrightness(w, x, y, z)
+      val ccrsi = CCRenderState.instance
+      ccrsi.reset()
+      ccrsi.lightMatrix.locate(w, x, y, z)
+      ccrsi.setBrightness(w, x, y, z)
       model.render(
         new Translation(x, y, z),
         new IconTransformation(icons(te.growth))
@@ -169,13 +163,14 @@ object RenderLily extends TInstancedBlockRender {
   override def getIcon(side: Int, meta: Int) = icons(7)
 
   override def renderInvBlock(r: RenderBlocks, meta: Int) {
-    CCRenderState.reset()
-    CCRenderState.setDynamic()
-    CCRenderState.pullLightmap()
-    CCRenderState.setNormal(0, -1, 0)
-    CCRenderState.startDrawing()
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
+    ccrsi.setDynamic()
+    ccrsi.pullLightmap()
+    ccrsi.setNormal(0, -1, 0)
+    ccrsi.startDrawing()
     r.drawCrossedSquares(icons(7), -0.5d, -0.95d, -0.5d, 1.65f)
-    CCRenderState.draw()
+    ccrsi.draw()
   }
 
   override def registerIcons(reg: IIconRegister) {

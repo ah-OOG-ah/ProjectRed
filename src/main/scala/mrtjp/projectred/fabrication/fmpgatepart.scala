@@ -359,11 +359,12 @@ class RenderCircuitGate extends GateRenderer[CircuitGatePart] {
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     TextureUtils.bindAtlas(0)
-    CCRenderState.startDrawing()
-    CCRenderState.pullLightmap()
-    CCRenderState.setDynamic()
+    val ccrsi = CCRenderState.instance
+    ccrsi.startDrawing()
+    ccrsi.pullLightmap()
+    ccrsi.setDynamic()
     housing.renderDynamic(t)
-    CCRenderState.draw()
+    ccrsi.draw()
     glDisable(GL_BLEND)
   }
 }

@@ -3,19 +3,18 @@ package mrtjp.projectred.transportation
 import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.raytracer.IndexedCuboid6
 import codechicken.lib.render.{CCRenderState, TextureUtils}
-import codechicken.lib.vec.{BlockCoord, Cuboid6, Rotation, Vector3}
+import codechicken.lib.vec.{Cuboid6, Rotation, Vector3}
 import codechicken.microblock.ISidedHollowConnect
 import codechicken.multipart._
-import cpw.mods.fml.relauncher.{SideOnly, Side}
+import cpw.mods.fml.relauncher.{Side, SideOnly}
+import mrtjp.core.inventory.InvWrapper
 import mrtjp.core.item.ItemKey
 import mrtjp.projectred.api.IConnectable
 import mrtjp.projectred.core._
-import mrtjp.core.inventory.InvWrapper
 import net.minecraft.client.renderer.RenderBlocks
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
 import net.minecraft.util.MovingObjectPosition
-import net.minecraftforge.common.util.ForgeDirection
 
 import scala.collection.JavaConversions._
 
@@ -149,7 +148,7 @@ abstract class SubcorePipePart
   override def renderStatic(pos: Vector3, pass: Int) = {
     if (pass == 0) {
       TextureUtils.bindAtlas(0)
-      CCRenderState.setBrightness(world, x, y, z)
+      CCRenderState.instance.setBrightness(world, x, y, z)
       doStaticTessellation(pos)
       true
     } else false

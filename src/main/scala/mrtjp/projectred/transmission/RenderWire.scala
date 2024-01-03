@@ -1,13 +1,14 @@
 package mrtjp.projectred.transmission
 
-import codechicken.lib.render._
-import codechicken.lib.vec._
-import codechicken.lib.render.uv._
+import codechicken.lib.lighting.LightModel
 import codechicken.lib.math.MathHelper
-import java.util
-import codechicken.lib.lighting.{LightMatrix, LightModel}
-import net.minecraft.util.IIcon
 import codechicken.lib.render.CCRenderState.IVertexOperation
+import codechicken.lib.render._
+import codechicken.lib.render.uv._
+import codechicken.lib.vec._
+import net.minecraft.util.IIcon
+
+import java.util
 
 object RenderWire {
 
@@ -106,7 +107,7 @@ object RenderWire {
       }
     }
 
-    CCRenderState.setPipeline(
+    CCRenderState.instance.setPipeline(
       new Translation(wire.x, wire.y, wire.z),
       new IconTransformation(icon)
     )

@@ -2,20 +2,11 @@ package mrtjp.projectred.transmission
 
 import codechicken.lib.data.{MCDataInput, MCDataOutput}
 import codechicken.lib.raytracer.IndexedCuboid6
-import codechicken.lib.render.{CCRenderState, TextureUtils}
+import codechicken.lib.render.CCRenderState
 import codechicken.lib.vec.{BlockCoord, Cuboid6, Rotation, Vector3}
 import codechicken.microblock.handler.MicroblockProxy
-import codechicken.microblock.{
-  ISidedHollowConnect,
-  ItemMicroPart,
-  MicroMaterialRegistry
-}
-import codechicken.multipart.{
-  PartMap,
-  TMultiPart,
-  TNormalOcclusion,
-  TileMultipart
-}
+import codechicken.microblock.{ISidedHollowConnect, ItemMicroPart, MicroMaterialRegistry}
+import codechicken.multipart.{PartMap, TMultiPart, TNormalOcclusion, TileMultipart}
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import mrtjp.core.world.PlacementLib
 import mrtjp.projectred.ProjectRedCore
@@ -149,7 +140,7 @@ trait TWireCommons
   @SideOnly(Side.CLIENT)
   override def renderStatic(pos: Vector3, pass: Int) = {
     if (pass == 0 && useStaticRenderer) {
-      CCRenderState.setBrightness(world, x, y, z)
+      CCRenderState.instance.setBrightness(world, x, y, z)
       doStaticTessellation(pos, pass)
       true
     } else false
@@ -159,20 +150,21 @@ trait TWireCommons
   override def renderDynamic(pos: Vector3, frame: Float, pass: Int) {
     if (pass == 0 && !useStaticRenderer) {
       GL11.glDisable(GL11.GL_LIGHTING)
-      CCRenderState.hasColour = true
-      CCRenderState.startDrawing()
+      val ccrsi = CCRenderState.instance
+      ccrsi.hasColour = true
+      ccrsi.startDrawing()
 
       doDynamicTessellation(pos, frame, pass)
 
-      CCRenderState.draw()
-      CCRenderState.hasColour = false
+      ccrsi.draw()
+      ccrsi.hasColour = false
       GL11.glEnable(GL11.GL_LIGHTING)
     }
   }
 
   @SideOnly(Side.CLIENT)
   override def drawBreaking(renderBlocks: RenderBlocks) {
-    CCRenderState.reset()
+    CCRenderState.instance.reset()
     doBreakTessellation(renderBlocks)
   }
 

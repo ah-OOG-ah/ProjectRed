@@ -12,7 +12,6 @@ import mrtjp.core.color.Colors
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.util.ResourceLocation
-import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11._
 
 import scala.collection.JavaConversions._
@@ -154,9 +153,10 @@ object PrefboardRenderer {
       Minecraft.getMinecraft.getTextureManager.bindTexture(r)
     }
 
-    CCRenderState.reset()
-    CCRenderState.pullLightmap()
-    CCRenderState.setDynamic()
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
+    ccrsi.pullLightmap()
+    ccrsi.setDynamic()
 
     for (
       (tex, models) <- Seq(
@@ -166,9 +166,9 @@ object PrefboardRenderer {
       )
     ) {
       bind(tex)
-      CCRenderState.startDrawing()
+      ccrsi.startDrawing()
       models(if (ortho) 1 else 0).render(t)
-      CCRenderState.draw()
+      ccrsi.draw()
     }
   }
 }

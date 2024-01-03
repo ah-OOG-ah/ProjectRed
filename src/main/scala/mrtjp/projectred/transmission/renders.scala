@@ -1,16 +1,12 @@
 package mrtjp.projectred.transmission
 
-import net.minecraftforge.client.IItemRenderer
-import net.minecraft.item.ItemStack
-import net.minecraftforge.client.IItemRenderer.{
-  ItemRendererHelper,
-  ItemRenderType
-}
-import codechicken.lib.render.{ColourMultiplier, CCRenderState, TextureUtils}
-import codechicken.lib.vec.{Vector3, Transformation, Translation, Scale}
-import net.minecraft.util.IIcon
 import codechicken.lib.render.CCRenderState.IVertexOperation
 import codechicken.lib.render.uv.IconTransformation
+import codechicken.lib.render.{CCRenderState, TextureUtils}
+import codechicken.lib.vec.{Scale, Translation, Vector3}
+import net.minecraft.item.ItemStack
+import net.minecraftforge.client.IItemRenderer
+import net.minecraftforge.client.IItemRenderer.{ItemRenderType, ItemRendererHelper}
 
 trait TWireItemRenderCommon extends IItemRenderer {
   def handleRenderType(item: ItemStack, rtype: ItemRenderType) = true
@@ -31,10 +27,11 @@ trait TWireItemRenderCommon extends IItemRenderer {
     val wdef = WireDef.values(meta)
     if (wdef == null) return
     TextureUtils.bindAtlas(0)
-    CCRenderState.reset()
-    CCRenderState.setDynamic()
-    CCRenderState.pullLightmap()
-    CCRenderState.startDrawing()
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
+    ccrsi.setDynamic()
+    ccrsi.pullLightmap()
+    ccrsi.startDrawing()
 
     doRender(
       wdef.thickness,
@@ -43,7 +40,7 @@ trait TWireItemRenderCommon extends IItemRenderer {
       new IconTransformation(wdef.wireSprites(0))
     )
 
-    CCRenderState.draw()
+    ccrsi.draw()
   }
 
   def doRender(thickness: Int, renderHue: Int, ops: IVertexOperation*)

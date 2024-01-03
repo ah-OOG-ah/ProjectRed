@@ -4,7 +4,6 @@ import codechicken.lib.render.{BlockRenderer, CCRenderState}
 import codechicken.lib.vec._
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import mrtjp.core.color.Colors
-import mrtjp.core.render.RenderLib
 import net.minecraft.client.Minecraft
 import net.minecraft.world.World
 import net.minecraftforge.client.event.RenderWorldLastEvent
@@ -85,13 +84,14 @@ object RenderHalo {
     glDisable(GL_LIGHTING)
     glDisable(GL_CULL_FACE)
     glDepthMask(false)
-    CCRenderState.reset()
-    CCRenderState.setDynamic()
-    CCRenderState.startDrawing()
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
+    ccrsi.setDynamic()
+    ccrsi.startDrawing()
   }
 
   def restoreRenderState() {
-    CCRenderState.draw()
+    CCRenderState.instance.draw()
     glDepthMask(true)
     glColor4d(1, 1, 1, 1)
     glEnable(GL_CULL_FACE)
@@ -102,7 +102,7 @@ object RenderHalo {
   }
 
   private def renderHalo(world: World, cc: LightCache) {
-    CCRenderState.setBrightness(world, cc.pos.x, cc.pos.y, cc.pos.z)
+    CCRenderState.instance.setBrightness(world, cc.pos.x, cc.pos.y, cc.pos.z)
     // Make sure to use camera coordinates for the halo transformation.
     val entity = Minecraft.getMinecraft.renderViewEntity
     renderHalo(
@@ -117,10 +117,11 @@ object RenderHalo {
   }
 
   def renderHalo(cuboid: Cuboid6, colour: Int, t: Transformation) {
-    CCRenderState.reset()
-    CCRenderState.setPipeline(t)
-    CCRenderState.baseColour = Colors(colour).rgba
-    CCRenderState.alphaOverride = 128
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
+    ccrsi.setPipeline(t)
+    ccrsi.baseColour = Colors(colour).rgba
+    ccrsi.alphaOverride = 128
     BlockRenderer.renderCuboid(cuboid, 0)
   }
 }

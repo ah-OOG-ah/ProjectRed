@@ -6,7 +6,6 @@
 package mrtjp.projectred.integration
 
 import codechicken.lib.colour.Colour
-import codechicken.lib.lighting.LightModel.Light
 import codechicken.lib.lighting.{LightModel, PlanarLightModel}
 import codechicken.lib.math.MathHelper
 import codechicken.lib.render.CCRenderState.IVertexOperation
@@ -839,9 +838,10 @@ class InputPanelButtonsModel extends ComponentModel {
 
   override def renderModel(t: Transformation, orient: Int) {
     val icon = new IconTransformation(baseIcon)
+    val ccrsi = CCRenderState.instance
     for (i <- 0 until 16) {
-      CCRenderState.setPipeline(
-        CCRenderState.lightMatrix,
+      ccrsi.setPipeline(
+        ccrsi.lightMatrix,
         orientT(orient).`with`(t),
         icon,
         ColourMultiplier.instance(Colors(i).rgba)

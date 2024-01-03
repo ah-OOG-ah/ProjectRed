@@ -645,8 +645,9 @@ object RenderICPrinter extends TInstancedBlockRender {
       meta: Int
   ) {
     val tile = WorldLib.getTileEntity(w, x, y, z, classOf[TileICPrinter])
-    CCRenderState.reset()
-    CCRenderState.lightMatrix.locate(w, x, y, z)
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
+    ccrsi.lightMatrix.locate(w, x, y, z)
 
     /** Here is a test case fo the rotations being wierd. The array 'lowerBoxes'
       * contains 4 generted blocks that have been prerotated, indexed by r. This
@@ -655,7 +656,7 @@ object RenderICPrinter extends TInstancedBlockRender {
     lowerBoxes(tile.rotation).render(
       new Translation(x, y, z),
       iconT,
-      CCRenderState.lightMatrix
+      ccrsi.lightMatrix
     )
 
     /** However, using only the first model (with a 0 rotation, so no rotation
@@ -679,12 +680,13 @@ object RenderICPrinter extends TInstancedBlockRender {
     val invT = new Translation(-0.5, -0.5, -0.5)
 
     TextureUtils.bindAtlas(0)
-    CCRenderState.reset()
-    CCRenderState.setDynamic()
-    CCRenderState.pullLightmap()
-    CCRenderState.startDrawing()
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
+    ccrsi.setDynamic()
+    ccrsi.pullLightmap()
+    ccrsi.startDrawing()
     lowerBoxes(0).render(invT, iconT)
-    CCRenderState.draw()
+    ccrsi.draw()
 
     RenderICPrinterDynamic.progress = 0
     RenderICPrinterDynamic.speed = 0
@@ -753,17 +755,18 @@ object RenderICPrinterDynamic extends TileEntitySpecialRenderer {
 
   def renderPrinterTop(t: Transformation) {
     TextureUtils.bindAtlas(0)
-    CCRenderState.reset()
-    CCRenderState.pullLightmap()
-    CCRenderState.setDynamic()
-    CCRenderState.startDrawing()
+    val ccrsi = CCRenderState.instance
+    ccrsi.reset()
+    ccrsi.pullLightmap()
+    ccrsi.setDynamic()
+    ccrsi.startDrawing()
 
     if (icState != 0) renderICChip(t)
 
     val iconT = new IconTransformation(RenderICPrinter.headIcon)
     renderFrame(t, iconT)
     renderShaft(t, iconT)
-    CCRenderState.draw()
+    CCRenderState.instance.draw()
 
     renderGlass(t, iconT)
   }
@@ -807,9 +810,11 @@ object RenderICPrinterDynamic extends TileEntitySpecialRenderer {
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-    CCRenderState.startDrawing()
+
+    val ccrsi = CCRenderState.instance
+    ccrsi.startDrawing()
     models("glass").render(t, iconT)
-    CCRenderState.draw()
+    ccrsi.draw()
 
     glDisable(GL_BLEND)
   }

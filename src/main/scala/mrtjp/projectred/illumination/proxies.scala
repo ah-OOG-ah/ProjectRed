@@ -4,10 +4,9 @@ import codechicken.multipart.MultiPartRegistry
 import codechicken.multipart.MultiPartRegistry.IPartFactory
 import cpw.mods.fml.client.registry.ClientRegistry
 import cpw.mods.fml.relauncher.{Side, SideOnly}
-import mrtjp.core.color.Colors_old
 import mrtjp.projectred.ProjectRedIllumination
 import mrtjp.projectred.ProjectRedIllumination._
-import mrtjp.projectred.core.{Configurator, IProxy}
+import mrtjp.projectred.core.IProxy
 import net.minecraft.item.Item
 import net.minecraftforge.client.MinecraftForgeClient
 

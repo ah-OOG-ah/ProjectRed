@@ -195,60 +195,6 @@ class BagInventory(player: EntityPlayer) extends TInventory {
   }
 }
 
-object ToolDefs {
-  private val wood = new ItemStack(Blocks.planks)
-  private val flint = new ItemStack(Items.flint)
-  private val iron = new ItemStack(Items.iron_ingot)
-  private val gold = new ItemStack(Items.gold_ingot)
-  private val ruby = PartDefs.RUBY.makeStack
-  private val sapphire = PartDefs.SAPPHIRE.makeStack
-  private val peridot = PartDefs.PERIDOT.makeStack
-  private val diamond = new ItemStack(Items.diamond)
-
-  import mrtjp.projectred.ProjectRedExploration.{toolMaterialPeridot, toolMaterialRuby, toolMaterialSapphire}
-
-  val RUBYAXE = ToolDef("axeruby", toolMaterialRuby, ruby)
-  val SAPPHIREAXE = ToolDef("axesapphire", toolMaterialSapphire, sapphire)
-  val PERIDOTAXE = ToolDef("axeperidot", toolMaterialPeridot, peridot)
-
-  val RUBYPICKAXE = ToolDef("pickaxeruby", toolMaterialRuby, ruby)
-  val SAPPHIREPICKAXE =
-    ToolDef("pickaxesapphire", toolMaterialSapphire, sapphire)
-  val PERIDOTPICKAXE = ToolDef("pickaxeperidot", toolMaterialPeridot, peridot)
-
-  val RUBYSHOVEL = ToolDef("shovelruby", toolMaterialRuby, ruby)
-  val SAPPHIRESHOVEL = ToolDef("shovelsapphire", toolMaterialSapphire, sapphire)
-  val PERIDOTSHOVEL = ToolDef("shovelperidot", toolMaterialPeridot, peridot)
-
-  val RUBYSWORD = ToolDef("swordruby", toolMaterialRuby, ruby)
-  val SAPPHIRESWORD = ToolDef("swordsapphire", toolMaterialSapphire, sapphire)
-  val PERIDOTSWORD = ToolDef("swordperidot", toolMaterialPeridot, peridot)
-
-  val RUBYHOE = ToolDef("hoeruby", toolMaterialRuby, ruby)
-  val SAPPHIREHOE = ToolDef("hoesapphire", toolMaterialSapphire, sapphire)
-  val PERIDOTHOE = ToolDef("hoeperidot", toolMaterialPeridot, peridot)
-
-  val WOODSAW = ToolDef("sawwood", toolMaterialWood, wood)
-  val STONESAW = ToolDef("sawstone", toolMaterialStone, flint)
-  val IRONSAW = ToolDef("sawiron", toolMaterialIron, iron)
-  val GOLDSAW = ToolDef("sawgold", toolMaterialGold, gold)
-  val RUBYSAW = ToolDef("sawruby", toolMaterialRuby, ruby)
-  val SAPPHIRESAW = ToolDef("sawsapphire", toolMaterialSapphire, sapphire)
-  val PERIDOTSAW = ToolDef("sawperidot", toolMaterialPeridot, peridot)
-  val DIAMONDSAW = ToolDef("sawdiamond", toolMaterialEmerald, diamond)
-
-  val WOODSICKLE = ToolDef("sicklewood", toolMaterialWood, wood)
-  val STONESICKLE = ToolDef("sicklestone", toolMaterialStone, flint)
-  val IRONSICKLE = ToolDef("sickleiron", toolMaterialIron, iron)
-  val GOLDSICKLE = ToolDef("sicklegold", toolMaterialGold, gold)
-  val RUBYSICKLE = ToolDef("sickleruby", toolMaterialRuby, ruby)
-  val SAPPHIRESICKLE = ToolDef("sicklesapphire", toolMaterialSapphire, sapphire)
-  val PERIDOTSICKLE = ToolDef("sickleperidot", toolMaterialPeridot, peridot)
-  val DIAMONDSICKLE = ToolDef("sicklediamond", toolMaterialEmerald, diamond)
-
-  case class ToolDef(unlocal: String, mat: ToolMaterial, repair: ItemStack)
-}
-
 trait TGemTool extends Item {
   setUnlocalizedName("projectred.exploration." + toolDef.unlocal)
   setTextureName("projectred:world/" + toolDef.unlocal)
@@ -380,44 +326,6 @@ class ItemGemSickle(override val toolDef: ToolDef)
     if (used) stack.damageItem(1, player)
     used
   }
-}
-
-object ArmorDefs {
-  import mrtjp.projectred.ProjectRedExploration.{armorMatrialPeridot, armorMatrialRuby, armorMatrialSapphire}
-  private val ruby = PartDefs.RUBY.makeStack
-  private val sapphire = PartDefs.SAPPHIRE.makeStack
-  private val peridot = PartDefs.PERIDOT.makeStack
-
-  val RUBYHELMET = ArmorDef("rubyhelmet", "ruby", armorMatrialRuby, ruby)
-  val RUBYCHESTPLATE =
-    ArmorDef("rubychestplate", "ruby", armorMatrialRuby, ruby)
-  val RUBYLEGGINGS = ArmorDef("rubyleggings", "ruby", armorMatrialRuby, ruby)
-  val RUBYBOOTS = ArmorDef("rubyboots", "ruby", armorMatrialRuby, ruby)
-
-  val SAPPHIREHELMET =
-    ArmorDef("sapphirehelmet", "sapphire", armorMatrialSapphire, sapphire)
-  val SAPPHIRECHESTPLATE =
-    ArmorDef("sapphirechestplate", "sapphire", armorMatrialSapphire, sapphire)
-  val SAPPHIRELEGGINGS =
-    ArmorDef("sapphireleggings", "sapphire", armorMatrialSapphire, sapphire)
-  val SAPPHIREBOOTS =
-    ArmorDef("sapphireboots", "sapphire", armorMatrialSapphire, sapphire)
-
-  val PERIDOTHELMET =
-    ArmorDef("peridothelmet", "peridot", armorMatrialPeridot, peridot)
-  val PERIDOTCHESTPLATE =
-    ArmorDef("peridotchestplate", "peridot", armorMatrialPeridot, peridot)
-  val PERIDOTLEGGINGS =
-    ArmorDef("peridotleggings", "peridot", armorMatrialPeridot, peridot)
-  val PERIDOTBOOTS =
-    ArmorDef("peridotboots", "peridot", armorMatrialPeridot, peridot)
-
-  case class ArmorDef(
-      unlocal: String,
-      tex: String,
-      mat: ArmorMaterial,
-      repair: ItemStack
-  )
 }
 
 class ItemGemArmor(adef: ArmorDef, atype: Int)

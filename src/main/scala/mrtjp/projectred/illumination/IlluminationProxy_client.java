@@ -22,18 +22,18 @@ public class IlluminationProxy_client extends IlluminationProxy_server {
 
         MinecraftForgeClient.registerItemRenderer(
                 itemPartIllumarButton,
-                RenderButton
+                RenderButton.instance
         );
         MinecraftForgeClient.registerItemRenderer(
                 itemPartIllumarFButton,
-                RenderFButton
+                RenderFButton.instance
         );
 
         MinecraftForgeClient.registerItemRenderer(
                 Item.getItemFromBlock(ProjectRedIllumination.blockLamp),
-                LampTESR
+                LampTESR.instance
         );
-        ClientRegistry.bindTileEntitySpecialRenderer(TileLamp.class, LampTESR);
+        ClientRegistry.bindTileEntitySpecialRenderer(TileLamp.class, LampTESR.instance);
     }
 
     public BiFunction<Integer, Integer, Integer> getLightValue = (meta, brightness) -> brightness;

@@ -15,7 +15,7 @@ import static mrtjp.projectred.ProjectRedIllumination.*;
 public class IlluminationProxy_server implements MultiPartRegistry.IPartFactory, IProxy {
 
     public List<LightObject> lights =
-            Arrays.asList(LightObjLantern.instance, LightObjFixture, LightObjFallout, LightObjCage);
+            Arrays.asList(LightObjLantern.instance, LightObjFixture.instance, LightObjFallout.instance, LightObjCage.instance);
 
     @Override
     public void preinit() {}

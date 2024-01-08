@@ -9,15 +9,16 @@ import net.minecraft.util.IIcon;
 
 import java.util.Map;
 
-public class LightObjFixture extends LightObject {
+public class LightObjFallout extends LightObject {
 
-    public static final LightObjFixture instance = new LightObjFixture();
+    public static final LightObjFallout instance = new LightObjFallout();
 
     public final Cuboid6[] bounds = bakedBoxes(
-            new Cuboid6(3.5 / 16d, 0, 3.5 / 16d, 12.5 / 16d, 6.5 / 16d, 12.5 / 16d)
+            new Cuboid6(2 / 16d, 0, 2 / 16d, 14 / 16d, 11 / 16d, 14 / 16d)
     );
     public final Cuboid6[] lBounds = bakedBoxes(
-            new Cuboid6(4 / 16d, 1.5 / 16, 4 / 16d, 12 / 16d, 6.5 / 16d, 12 / 16d)
+            new Cuboid6(4 / 16d, 1.5 / 16, 4 / 16d, 12 / 16d, 10 / 16d, 12 / 16d)
+                    .expand(-0.002D)
     );
 
     public IIcon icon;
@@ -27,11 +28,11 @@ public class LightObjFixture extends LightObject {
 
     @Override
     public String getItemName() {
-        return "projectred.illumination.fixture";
+        return  "projectred.illumination.cagelamp";
     }
     @Override
     public String getType() {
-        return "pr_fixture";
+        return  "pr_cagelamp";
     }
 
     @Override
@@ -60,12 +61,12 @@ public class LightObjFixture extends LightObject {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister reg) {
-        icon = reg.registerIcon("projectred:lighting/fixture");
+        icon = reg.registerIcon("projectred:lighting/fallout");
     }
 
     @Override
     public void loadModels() {
-        final Map<String, CCModel> models = parseModel("fixture");
+        final Map<String, CCModel> models = parseModel("fallout");
         final CCModel chassi = models.get("chassi");
         final CCModel bulb = models.get("bulb");
 

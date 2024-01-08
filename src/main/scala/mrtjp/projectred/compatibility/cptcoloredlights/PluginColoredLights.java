@@ -1,12 +1,15 @@
 package mrtjp.projectred.compatibility.cptcoloredlights;
 
+import coloredlightscore.src.api.CLApi;
+import mrtjp.core.color.Colors;
 import mrtjp.projectred.compatibility.IPRPlugin;
 import mrtjp.projectred.core.Configurator;
 import mrtjp.projectred.illumination.IlluminationProxy;
+import mrtjp.projectred.illumination.IlluminationProxy$;
 
 import java.util.Arrays;
 
-public class PluginColoredLights extends IPRPlugin {
+public class PluginColoredLights implements IPRPlugin {
 
     public static final String PRIll_modID = "ProjRed|Illumination";
     public static final String CL_modID = "easycoloredlights";
@@ -23,17 +26,21 @@ public class PluginColoredLights extends IPRPlugin {
 
     @Override
     public void preInit() {
-        IlluminationProxy.getLightValue() = (m, b) => {
-            if (!(0 until 16 contains m)) b
-      else {
-                val c = Colors(m)
-                CLApi.makeRGBLightValue(c.rF, c.gF, c.bF)
+        IlluminationProxy$.MODULE$.getLightValue = (m, b) -> {
+            if (!(0 <= m && m < 16)) return b;
+            else {
+                final Colors c = Colors.values()[m];
+                return CLApi.makeRGBLightValue(c.rF, c.gF, c.bF);
             }
-        }
+        };
     }
 
-    override def init() {}
-    override def postInit() {}
+    @Override
+    public void init() {}
+    @Override
+    public void postInit() {}
 
-    override def desc() = "Colored Lights: Illumination lighting"
+    public String desc() {
+        return  "Colored Lights: Illumination lighting";
+    }
 }

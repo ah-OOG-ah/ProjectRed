@@ -5,32 +5,27 @@
  */
 package mrtjp.projectred.expansion
 
-import java.util.{List => JList}
 import codechicken.lib.data.MCDataInput
-import codechicken.lib.gui.GuiDraw
 import codechicken.lib.render.uv.{MultiIconTransformation, UVTransformation}
 import cpw.mods.fml.relauncher.{Side, SideOnly}
-import mrtjp.core.color.Colors
 import mrtjp.core.gui._
 import mrtjp.core.inventory.{InvWrapper, TInventory}
 import mrtjp.core.item.{ItemEquality, ItemKey, ItemKeyStack, ItemQueue}
 import mrtjp.core.render.TCubeMapRender
-import mrtjp.core.vec.{Point, Size}
 import mrtjp.core.world.WorldLib
 import mrtjp.projectred.ProjectRedExpansion
-import mrtjp.projectred.core.libmc.PRResources
 import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.{ICrafting, ISidedInventory, InventoryCrafting}
+import net.minecraft.inventory.{ISidedInventory, InventoryCrafting}
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.{CraftingManager, IRecipe}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.IIcon
 import net.minecraft.world.IBlockAccess
 import net.minecraftforge.oredict.{ShapedOreRecipe, ShapelessOreRecipe}
-import org.lwjgl.input.Keyboard
 import org.apache.commons.lang3.tuple.{ImmutableTriple, Triple}
 
+import java.util.{List => JList}
 import scala.collection.JavaConversions._
 
 class TileAutoCrafter
@@ -237,140 +232,6 @@ class TileAutoCrafter
 
   override def createContainer(player: EntityPlayer) =
     new ContainerAutoCrafter(player, this)
-}
-
-class ContainerAutoCrafter(player: EntityPlayer, tile: TileAutoCrafter)
-    extends ContainerPoweredMachine(tile) {
-  {
-    for (
-      ((x, y), i) <- GuiLib.createSlotGrid(98, 22, 3, 3, 0, 0).zipWithIndex
-    ) {
-      val s = new Slot3(tile, i, x, y)
-      s.canPlaceDelegate = { s =>
-        s.getItem.isInstanceOf[ItemPlan] && ItemPlan.hasRecipeInside(s)
-      }
-      addSlotToContainer(s)
-    }
-
-    for (((x, y), i) <- GuiLib.createSlotGrid(8, 80, 9, 2, 0, 0).zipWithIndex)
-      addSlotToContainer(new Slot3(tile, i + 9, x, y))
-
-    addPlayerInv(player, 8, 130)
-  }
-
-  var slot = -1
-
-  override def detectAndSendChanges() {
-    super.detectAndSendChanges()
-    import scala.collection.JavaConversions._
-    for (i <- crafters) {
-      val ic = i.asInstanceOf[ICrafting]
-
-      if (slot != tile.planSlot)
-        ic.sendProgressBarUpdate(this, 3, tile.planSlot)
-      slot = tile.planSlot
-    }
-  }
-
-  override def updateProgressBar(id: Int, bar: Int) = id match {
-    case 3 => tile.planSlot = bar
-    case _ => super.updateProgressBar(id, bar)
-  }
-
-  override def doMerge(stack: ItemStack, from: Int): Boolean = {
-    if (0 until 9 contains from) // plan slots
-      {
-        tryMergeItemStack(stack, 27, 63, false) // merge to inventory
-      } else if (9 until 27 contains from) // storage
-      {
-        if (stack.getItem.isInstanceOf[ItemPlan])
-          tryMergeItemStack(stack, 0, 9, false) // merge to plan
-        else tryMergeItemStack(stack, 27, 63, false) // merge to inventory
-      } else if (27 until 63 contains from) // player inventory
-      {
-        if (stack.getItem.isInstanceOf[ItemPlan])
-          tryMergeItemStack(stack, 0, 9, false) // merge to plan
-        else tryMergeItemStack(stack, 9, 27, false) // merge to storage
-      } else false
-  }
-}
-
-class GuiAutoCrafter(tile: TileAutoCrafter, c: ContainerAutoCrafter)
-    extends NodeGui(c, 176, 212) {
-  {
-    val cycle = new IconButtonNode {
-      override def drawButton(mouseover: Boolean) {
-        PRResources.guiAutoCrafter.bind()
-        drawTexturedModalRect(position.x, position.y, 176, 0, 14, 14)
-      }
-    }
-    cycle.position = Point(59, 41)
-    cycle.size = Size(14, 14)
-    cycle.clickDelegate = { () => tile.sendCyclePlanSlot() }
-    addChild(cycle)
-  }
-
-  override def drawBack_Impl(mouse: Point, rframe: Float) {
-    PRResources.guiAutoCrafter.bind()
-    GuiDraw.drawTexturedModalRect(0, 0, 0, 0, size.width, size.height)
-
-    val Point(sx, sy) = Point(18, 18)
-      .multiply(tile.planSlot % 3, tile.planSlot / 3)
-      .add(98, 22)
-      .subtract(3)
-    GuiDraw.drawTexturedModalRect(sx, sy, 193, 0, 22, 22)
-
-    if (tile.cond.canWork)
-      GuiDraw.drawTexturedModalRect(16, 16, 177, 18, 7, 9)
-    GuiLib.drawVerticalTank(
-      16,
-      26,
-      177,
-      27,
-      7,
-      48,
-      tile.cond.getChargeScaled(48)
-    )
-
-    if (tile.cond.flow == -1)
-      GuiDraw.drawTexturedModalRect(27, 16, 185, 18, 7, 9)
-    GuiLib.drawVerticalTank(27, 26, 185, 27, 7, 48, tile.cond.getFlowScaled(48))
-
-    val plan = tile.getStackInSlot(tile.planSlot)
-    if (plan != null && ItemPlan.hasRecipeInside(plan))
-      ItemDisplayNode.renderItem(
-        Point(152, 58),
-        Size(16, 16),
-        zPosition,
-        true,
-        ItemPlan.loadPlanOutput(plan)
-      )
-
-    GuiDraw.drawString("Auto Crafting Bench", 8, 6, Colors.GREY.argb, false)
-    GuiDraw.drawString("Inventory", 8, 120, Colors.GREY.argb, false)
-  }
-
-  override def drawFront_Impl(mouse: Point, rframe: Float) {
-    if (
-      Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(
-        Keyboard.KEY_RSHIFT
-      )
-    )
-      GuiProjectBench.drawPlanOutputOverlay(c.slots)
-  }
-}
-
-object GuiAutoCrafter extends TGuiBuilder {
-  override def getID = ExpansionProxy.autoCrafterGui
-
-  @SideOnly(Side.CLIENT)
-  override def buildGui(player: EntityPlayer, data: MCDataInput) = {
-    WorldLib.getTileEntity(player.worldObj, data.readCoord()) match {
-      case t: TileAutoCrafter =>
-        new GuiAutoCrafter(t, t.createContainer(player))
-      case _ => null
-    }
-  }
 }
 
 object RenderAutoCrafter extends TCubeMapRender {

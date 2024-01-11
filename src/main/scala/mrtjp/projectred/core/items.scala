@@ -1,20 +1,18 @@
 package mrtjp.projectred.core
 
-import java.util.{List => JList, Set => JSet}
-
 import cpw.mods.fml.relauncher.{Side, SideOnly}
-import mrtjp.core.item.{ItemCore, ItemDefinition}
+import mrtjp.core.item.ItemCore
 import mrtjp.projectred.ProjectRedCore
 import mrtjp.projectred.api.IScrewdriver
 import net.minecraft.client.renderer.texture.IIconRegister
-import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.item.{Item, ItemStack}
+import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.{EnumChatFormatting, IIcon}
 import net.minecraft.world.World
 import org.lwjgl.input.Keyboard
 
+import java.util.{List => JList, Set => JSet}
 import scala.collection.JavaConversions
 
 abstract class ItemCraftingDamage(name: String) extends ItemCore(name) {
@@ -34,42 +32,6 @@ abstract class ItemCraftingDamage(name: String) extends ItemCore(name) {
     }
 
   override def doesContainerItemLeaveCraftingGrid(stack: ItemStack) = false
-}
-
-class ItemDrawPlate extends ItemCraftingDamage("projectred.core.drawplate") {
-  setMaxDamage(512)
-  setCreativeTab(ProjectRedCore.tabCore)
-
-  override def registerIcons(par1IconRegister: IIconRegister) {
-    itemIcon = par1IconRegister.registerIcon("projectred:base/draw_plate")
-  }
-}
-
-class ItemPart extends ItemCore("projectred.core.part") {
-  setCreativeTab(ProjectRedCore.tabCore)
-  setHasSubtypes(true)
-
-  override def getSubItems(item: Item, tab: CreativeTabs, list: JList[ItemStack]) {
-    for (i <- PartDefs.values)
-      list.add(i.makeStack)
-  }
-
-  @SideOnly(Side.CLIENT)
-  override def registerIcons(reg: IIconRegister) {
-    for (i <- PartDefs.values) i.registerIcon(reg)
-  }
-
-  override def getIconFromDamage(meta: Int) = {
-    val col = PartDefs(meta)
-    if (col != null) col.icon
-    else null
-  }
-
-  override def getUnlocalizedName(stack: ItemStack): String = {
-    val col = PartDefs(stack.getItemDamage())
-    if (col != null) getUnlocalizedName() + "." + col.name
-    else super.getUnlocalizedName(stack)
-  }
 }
 
 class ItemScrewdriver

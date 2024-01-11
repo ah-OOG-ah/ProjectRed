@@ -17,7 +17,7 @@ object Services {
     PluginTConstruct,
     PluginThermalExpansion,
     PluginCC_BundledCable,
-    PluginColoredLights,
+    PluginColoredLights.instance,
     PluginMFRDeepStorage,
     PluginStorageDrawers
   )

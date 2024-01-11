@@ -135,56 +135,6 @@ class TileFilteredImporter
   }
 }
 
-class GuiFilteredImporter(c: Container, tile: TileFilteredImporter)
-    extends NodeGui(c, 176, 168) {
-  {
-    val color = new IconButtonNode {
-      override def drawButton(mouseover: Boolean) {
-        if (tile.colour == -1) {
-          ResourceLib.guiExtras.bind()
-          GuiDraw.drawTexturedModalRect(position.x, position.y, 40, 2, 11, 11)
-        } else
-          GuiDraw.drawRect(
-            position.x + 2,
-            position.y + 2,
-            8,
-            8,
-            Colors(tile.colour).argb
-          )
-      }
-
-      override def onButtonClicked() {
-        tile.clientCycleColourUp()
-      }
-    }
-    color.position = Point(133, 37)
-    color.size = Size(13, 13)
-    addChild(color)
-  }
-
-  override def drawBack_Impl(mouse: Point, frame: Float) {
-    PRResources.guiFilteredImporter.bind()
-    GuiDraw.drawTexturedModalRect(0, 0, 0, 0, 176, 168)
-    GuiDraw.drawString("Filtered Importer", 8, 6, Colors.GREY.argb, false)
-    GuiDraw.drawString("Inventory", 8, 75, Colors.GREY.argb, false)
-  }
-}
-
-object GuiFilteredImporter extends TGuiBuilder {
-  override def getID = ExpansionProxy.filteredImporterGui
-
-  @SideOnly(Side.CLIENT)
-  override def buildGui(player: EntityPlayer, data: MCDataInput) = {
-    val t = WorldLib.getTileEntity(
-      player.worldObj,
-      data.readCoord(),
-      classOf[TileFilteredImporter]
-    )
-    if (t != null) new GuiFilteredImporter(t.createContainer(player), t)
-    else null
-  }
-}
-
 object RenderFilteredImporter
     extends TInstancedBlockRender
     with TCubeMapRender {

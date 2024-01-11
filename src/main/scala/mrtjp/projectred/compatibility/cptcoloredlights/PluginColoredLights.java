@@ -11,8 +11,10 @@ import java.util.Arrays;
 
 public class PluginColoredLights implements IPRPlugin {
 
-    public static final String PRIll_modID = "ProjRed|Illumination";
-    public static final String CL_modID = "easycoloredlights";
+    public static final PluginColoredLights instance = new PluginColoredLights();
+
+    public final String PRIll_modID = "ProjRed|Illumination";
+    public final String CL_modID = "easycoloredlights";
 
     @Override
     public String[] getModIDs() {

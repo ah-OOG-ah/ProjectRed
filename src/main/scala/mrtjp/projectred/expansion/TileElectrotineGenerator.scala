@@ -96,7 +96,7 @@ class TileElectrotineGenerator
 
   override def isItemValidForSlot(slot: Int, stack: ItemStack) =
     stack != null && stack.getItem == ProjectRedCore.itemPart &&
-      stack.getItemDamage == PartDefs.ELECTROTINE.meta
+      stack.getItemDamage == PartDefs.ELECTROTINE.ordinal
 
   def getStorageScaled(i: Int) = math.min(i, i * storage / getMaxStorage)
   def getBurnTimeScaled(i: Int) =

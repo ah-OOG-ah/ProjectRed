@@ -10,7 +10,7 @@ import mrtjp.projectred.api._
 import mrtjp.projectred.core._
 import net.minecraft.block.material.Material
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.{Container, ICrafting, ISidedInventory}
+import net.minecraft.inventory.{ICrafting, ISidedInventory}
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.IBlockAccess
@@ -134,20 +134,6 @@ abstract class TileMachine extends TTileOrient {
   }
 
   def onBlockRotated() {}
-}
-
-trait TGuiMachine extends TileMachine {
-  abstract override def onBlockActivated(player: EntityPlayer, side: Int) = {
-    if (super.onBlockActivated(player, side)) true
-    else if (!player.isSneaking) {
-      if (!world.isRemote) openGui(player)
-      true
-    } else false
-  }
-
-  def openGui(player: EntityPlayer)
-
-  def createContainer(player: EntityPlayer): Container
 }
 
 trait TPoweredMachine extends TileMachine with TPowerTile with ILowLoadMachine {

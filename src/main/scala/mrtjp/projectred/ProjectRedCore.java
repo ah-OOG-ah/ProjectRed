@@ -19,7 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(
-    modid = "ProjRed|Core",
+    modid = ProjectRedCore.modid,
     version = ProjectRedCore.VERSION,
     dependencies = "required-after:Forge;" +
         "required-after:ForgeMultipart;" +
@@ -30,7 +30,8 @@ import org.apache.logging.log4j.Logger;
 )
 public class ProjectRedCore {
 
-    public static final Logger log = LogManager.getFormatterLogger("ProjRed|Core");
+    public static final String modid = "ProjRed|Core";
+    public static final Logger log = LogManager.getFormatterLogger(modid);
     public static final String VERSION = "GRADLETOKEN_VERSION";
 
     /** Items * */
@@ -40,7 +41,7 @@ public class ProjectRedCore {
     public static ItemWireDebugger itemWireDebugger = null;
     public static ItemDataCard itemDataCard = null;
 
-    public CreativeTabs tabCore = new CreativeTabs("core") {
+    public static CreativeTabs tabCore = new CreativeTabs("core") {
 
         @Override
         public ItemStack getIconItemStack() {
@@ -57,7 +58,7 @@ public class ProjectRedCore {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        Configurator.loadConfig();
+        Configurator.instance.loadConfig();
         CoreProxy.versionCheck();
         CoreProxy.preinit();
     }
